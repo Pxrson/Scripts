@@ -28,9 +28,11 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/h
 ```
 **Obbies:**
 ```lua
+-- omega obby
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/Obbies/oMega%20Obby.lua",true))()
 ```
 ```lua
+-- wall hop obby
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/Obbies/Wall%20Hop%20Obby.lua",true))()
 ```
 
