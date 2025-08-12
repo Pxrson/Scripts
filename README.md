@@ -16,7 +16,11 @@ my collection of scripts for roblox btw you can find my socials by going thru [M
 </div>
 
 ---
-
+**Project X Altura:**
+```lua
+-- supports mm2 and (soon)bladeball
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Project-X-Altura/refs/heads/main/project/Main.lua", true))()
+```
 **Copy Position & Anti AFK:**
 ```lua
 -- copy pos
