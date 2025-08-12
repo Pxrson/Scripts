@@ -24,9 +24,12 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/h
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/antiAFK%20copyPOS/anti%20afk.lua",true))()
 ```
-**oMega Obby:**
+**Obbies:**
 ```lua
-idk yet
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/Obbies/oMega%20Obby.lua",true))()
+```
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/Obbies/Wall%20Hop%20Obby.lua",true))()
 ```
 
 ---
