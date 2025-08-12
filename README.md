@@ -11,9 +11,6 @@ my collection of scripts for roblox
   <a href="https://www.lua.org/">
     <img src="https://img.shields.io/badge/Language-Lua-2C2D72?style=for-the-badge&logo=lua&logoColor=white" alt="Language">
   </a>
-  <a href="https://github.com/Pxrson/Scripts">
-    <img src="https://img.shields.io/github/stars/Pxrson/Scripts?style=for-the-badge&logo=github&color=yellow" alt="Stars">
-  </a>
 </p>
 
 </div>
