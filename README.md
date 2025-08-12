@@ -33,7 +33,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/h
 
 <p>
   <img src="https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square" alt="Status">
-  <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="License">
+
 </p>
 
 </div>
