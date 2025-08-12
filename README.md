@@ -17,12 +17,10 @@ my collection of scripts for roblox
 
 ---
 
-**Copy Position**
+**Copy Position & Anti AFK**
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/antiAFK%20copyPOS/copy%20position.lua",true))()
 ```
-
-**Anti AFK**
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/antiAFK%20copyPOS/anti%20afk.lua",true))()
 ```
