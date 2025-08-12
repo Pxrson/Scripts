@@ -2,7 +2,7 @@
 
 # RBX Scripts
 
-my collection of scripts for roblox
+my collection of scripts for roblox btw you can find my discord by going thru [MY GITHUB](https://github.com/Pxrson)
 
 <p align="center">
   <a href="https://www.roblox.com/">
