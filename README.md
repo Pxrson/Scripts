@@ -6,10 +6,10 @@ my collection of scripts for roblox
 
 <p align="center">
   <a href="https://www.roblox.com/">
-    <img src="https://img.shields.io/badge/Platform-Roblox-00A2FF?style=for-the-badge&logo=roblox&logoColor=white" alt="Platform">
+    <img src="https://img.shields.io/badge/Platform-Roblox-00A2FF?style=for-the-badge&logo=roblox&logoColor=white&labelColor=1a1a1a" alt="Platform">
   </a>
   <a href="https://www.lua.org/">
-    <img src="https://img.shields.io/badge/Language-Lua-2C2D72?style=for-the-badge&logo=lua&logoColor=white" alt="Language">
+    <img src="https://img.shields.io/badge/Language-Lua-2C2D72?style=for-the-badge&logo=lua&logoColor=white&labelColor=1a1a1a" alt="Language">
   </a>
 </p>
 
@@ -32,7 +32,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/h
 <div align="center">
 
 <p>
-  <img src="https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square" alt="Status">
+  <img src="https://img.shields.io/badge/Status-Active-00C851?style=for-the-badge&logoColor=white&labelColor=1a1a1a" alt="Status">
 
 </p>
 
