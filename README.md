@@ -1,10 +1,9 @@
-# RBX Scripts
+## RBX Scripts
 
-my collection of scripts for roblox. you can find my socials through [MY GITHUB](https://github.com/Pxrson)
-
-[![Platform](https://img.shields.io/badge/Platform-Roblox-00A2FF?style=for-the-badge&logo=roblox&logoColor=white&labelColor=1a1a1a)](https://www.roblox.com/)
-[![Language](https://img.shields.io/badge/Language-Lua-2C2D72?style=for-the-badge&logo=lua&logoColor=white&labelColor=1a1a1a)](https://www.lua.org/)
-[![Status](https://img.shields.io/badge/Status-Active-00C851?style=for-the-badge&logoColor=white&labelColor=1a1a1a)](#)
-
----
-
+| Script Name           | Loadstring |
+|----------------------|------------|
+| Project X Altura      | ```lua loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Project-X-Altura/refs/heads/main/project/Main.lua", true))()``` |
+| Copy Position         | ```lua loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/antiAFK%20copyPOS/copy%20position.lua",true))()``` |
+| Anti AFK              | ```lua loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/antiAFK%20copyPOS/anti%20afk.lua",true))()``` |
+| oMega Obby            | ```lua loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/Obbies/oMega%20Obby.lua",true))()``` |
+| Wall Hop Obby         | ```lua loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/Obbies/Wall%20Hop%20Obby.lua",true))()``` |
