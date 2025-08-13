@@ -1,6 +1,6 @@
 ## RBX Scripts
 
-| Script Name           | Loadstring |
+| Script Name| Loadstring |
 |----------------------|------------|
 | Project X Altura      | ```lua loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Project-X-Altura/refs/heads/main/project/Main.lua", true))()``` |
 | Copy Position         | ```lua loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/antiAFK%20copyPOS/copy%20position.lua",true))()``` |
