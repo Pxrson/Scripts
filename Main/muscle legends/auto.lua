@@ -1,4 +1,4 @@
---// auto speed grind (u have to equip your packs urself)
+--// auto speed grind no rebirth (u have to equip your packs urself)
 for i = 1, 12 do
     task.spawn(function()
         while value do
