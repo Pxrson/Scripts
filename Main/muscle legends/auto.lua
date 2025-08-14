@@ -1,3 +1,13 @@
+--// auto speed grind (u have to equip your packs urself)
+for i = 1, 12 do
+    task.spawn(function()
+        while value do
+            game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
+            task.wait(0.083)
+        end
+    end)
+end
+
 --// auto join brawl
 while true do
     game:GetService("ReplicatedStorage").rEvents.brawlEvent:FireServer("joinBrawl")
