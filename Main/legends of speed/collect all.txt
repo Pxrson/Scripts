@@ -5,7 +5,7 @@ local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPa
 while true do
     if not hrp then
         hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-        task.wait(0.5)
+        task.wait(0.05)
         continue
     end
 
@@ -15,9 +15,9 @@ while true do
             if part then
                 firetouchinterest(hrp, part, 0)
                 firetouchinterest(hrp, part, 1)
-                task.wait(0.1)
+                task.wait(0.05)
             end
         end
     end
-    task.wait(0.2)
+    task.wait(0.05)
 end
