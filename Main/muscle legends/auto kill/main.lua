@@ -23,7 +23,7 @@ while true do
         hop()
         break
     else
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/auto-kill/refs/heads/main/auto%20kill.lua", true))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua", true))()
     end
     task.wait(10)
 end
