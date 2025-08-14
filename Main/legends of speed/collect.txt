@@ -1,0 +1,85 @@
+--// red orb
+local player = game.Players.LocalPlayer
+
+local function collectRedOrb()
+    local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    for _, orb in pairs(workspace:GetChildren()) do
+        if orb.Name == "Red Orb" then
+            local part = orb:FindFirstChildWhichIsA("BasePart")
+            if part then
+                firetouchinterest(hrp, part, 0)
+                firetouchinterest(hrp, part, 1)
+            end
+        end
+    end
+end
+
+while wait() do
+   game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb","Red Orb","City")
+end
+
+--// blue orb
+local player = game.Players.LocalPlayer
+
+local function collectBlueOrb()
+    local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    for _, orb in pairs(workspace:GetChildren()) do
+        if orb.Name == "Blue Orb" then
+            local part = orb:FindFirstChildWhichIsA("BasePart")
+            if part then
+                firetouchinterest(hrp, part, 0)
+                firetouchinterest(hrp, part, 1)
+            end
+        end
+    end
+end
+
+while wait() do
+   game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb","Blue Orb","City")
+end
+
+--// yellow orb
+local player = game.Players.LocalPlayer
+
+local function collectYellowOrb()
+    local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    for _, orb in pairs(workspace:GetChildren()) do
+        if orb.Name == "Yellow Orb" then
+            local part = orb:FindFirstChildWhichIsA("BasePart")
+            if part then
+                firetouchinterest(hrp, part, 0)
+                firetouchinterest(hrp, part, 1)
+            end
+        end
+    end
+end
+
+while wait() do
+   game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb","Yellow Orb","City")
+end
+
+--// gem
+local player = game.Players.LocalPlayer
+
+local function collectGem()
+    local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    for _, gem in pairs(workspace:GetChildren()) do
+        if gem.Name == "Gem" then
+            local part = gem:FindFirstChildWhichIsA("BasePart")
+            if part then
+                firetouchinterest(hrp, part, 0)
+                firetouchinterest(hrp, part, 1)
+            end
+        end
+    end
+end
+
+while wait() do
+   game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb","Gem Orb","City")
+end
