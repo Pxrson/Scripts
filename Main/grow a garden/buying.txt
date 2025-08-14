@@ -1,0 +1,15 @@
+game:GetService("ReplicatedStorage").GameEvents.BuyPetEgg:FireServer(0)
+game:GetService("ReplicatedStorage").GameEvents.BuyPetEgg:FireServer(3)
+game:GetService("ReplicatedStorage").GameEvents.BuyPetEgg:FireServer(1)
+game:GetService("ReplicatedStorage").GameEvents.BuyPetEgg:FireServer(2)
+game:GetService("ReplicatedStorage").GameEvents.BuyEventShopStock:FireServer("Blood Owl")
+game:GetService("ReplicatedStorage").GameEvents.BuyEventShopStock:FireServer("Blood Kiwi")
+game:GetService("ReplicatedStorage").GameEvents.BuyEventShopStock:FireServer("Blood Hedgehog")
+game:GetService("ReplicatedStorage").GameEvents.BuyEventShopStock:FireServer("Star Caller")
+game:GetService("ReplicatedStorage").GameEvents.BuyEventShopStock:FireServer("Moon Melon")
+game:GetService("ReplicatedStorage").GameEvents.BuyEventShopStock:FireServer("Blood Banana")
+game:GetService("ReplicatedStorage").GameEvents.BuyEventShopStock:FireServer("Night Seed Pack")
+game:GetService("ReplicatedStorage").GameEvents.BuyEventShopStock:FireServer("Night Egg")
+game:GetService("ReplicatedStorage").GameEvents.BuyEventShopStock:FireServer("Bloodmoon Crate")
+game:GetService("Players").LocalPlayer.PlayerGui.NightEventShop_UI
+game:GetService("Players").LocalPlayer.PlayerGui.EventShop_UI
