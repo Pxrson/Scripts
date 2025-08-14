@@ -1,0 +1,14 @@
+--// chests
+local chests = {
+        workspace.goldenChest.circleInner,
+        workspace.enchantedChest.circleInner,
+        workspace.magmaChest.circleInner,
+        workspace.groupRewardsCircle.circleInner
+    }
+
+    for _, chestPart in ipairs(chests) do
+        firetouchinterest(player.Character.HumanoidRootPart, chestPart, 0)
+        firetouchinterest(player.Character.HumanoidRootPart, chestPart, 1)
+        task.wait(0.1)
+    end
+end
