@@ -1,0 +1,20 @@
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+
+local Player = Players.LocalPlayer
+local Char = Player.Character or Player.CharacterAdded:Wait()
+local Root = Char:WaitForChild("HumanoidRootPart")
+local Hoops = Workspace:WaitForChild("Hoops")
+
+local Success = 0
+local Total = #Hoops:GetChildren()
+
+for Index, Hoop in pairs(Hoops:GetChildren()) do
+    if Hoop:IsA("MeshPart") and Hoop:FindFirstChild("TouchInterest") then
+        firetouchinterest(Hoop, Root, 0)
+        wait(0.05)
+        firetouchinterest(Hoop, Root, 1)
+        Success = Success + 1
+    end
+    wait(0.05)
+end
