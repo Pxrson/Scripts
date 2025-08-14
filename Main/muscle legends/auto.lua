@@ -1,4 +1,4 @@
---// auto speed grind no rebirth (u have to equip your packs urself)
+--// auto speed grind NO rebirth (equip packs urself)
 for i = 1, 12 do
     task.spawn(function()
         while value do
@@ -82,3 +82,39 @@ while true do
     end
     wait(0.1)
 end
+
+--// fast rebirth (equip packs urself)
+task.spawn(function()
+    while true do
+        local player = game.Players.LocalPlayer
+        local rebirths = player.leaderstats.Rebirths.Value
+        local rebirthCost = 10000 + (5000 * rebirths)
+
+        if player.ultimatesFolder:FindFirstChild("Golden Rebirth") then
+            local goldenRebirths = player.ultimatesFolder["Golden Rebirth"].Value
+            rebirthCost = math.floor(rebirthCost * (1 - (goldenRebirths * 0.1)))
+        end
+
+        local machine = findMachine("Jungle Bar Lift")
+        if machine and machine:FindFirstChild("interactSeat") then
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                character.HumanoidRootPart.CFrame = machine.interactSeat.CFrame * CFrame.new(0, 3, 0)
+                task.wait(0.1)
+                pressE()
+            end
+        end
+
+        while player.leaderstats.Strength.Value < rebirthCost do
+            game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
+            task.wait(0.03)
+        end
+
+        if player.leaderstats.Strength.Value >= rebirthCost then
+            task.wait(0.1)
+            game:GetService("ReplicatedStorage").rEvents.rebirthRemote:InvokeServer("rebirthRequest")
+        end
+
+        task.wait(0.05)
+    end
+end)
