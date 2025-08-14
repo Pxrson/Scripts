@@ -4,4 +4,4 @@
 
 [![Lua](https://img.shields.io/badge/Lua-%232C2D72.svg?logo=lua\&logoColor=white)](#)
 [![Roblox](https://img.shields.io/badge/Roblox-%23000000.svg?logo=roblox\&logoColor=white)](#)
-[![All Active](https://img.shields.io/badge/Game%20Development-%234CAF50.svg?logo=unity\&logoColor=white)](#)
+[![All Active](https://img.shields.io/badge/All%20Active-%234CAF50.svg?logo=unity\&logoColor=white)](#)
