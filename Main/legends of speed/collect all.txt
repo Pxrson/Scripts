@@ -1,0 +1,23 @@
+-- not tested
+local player = game.Players.LocalPlayer
+local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+
+while true do
+    if not hrp then
+        hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        task.wait(0.5)
+        continue
+    end
+
+    for _, orb in pairs(workspace:GetChildren()) do
+        if orb.Name == "Red Orb" or orb.Name == "Yellow Orb" or orb.Name == "Blue Orb" or orb.Name == "Gem" then
+            local part = orb:FindFirstChildWhichIsA("BasePart")
+            if part then
+                firetouchinterest(hrp, part, 0)
+                firetouchinterest(hrp, part, 1)
+                task.wait(0.1)
+            end
+        end
+    end
+    task.wait(0.2)
+end
