@@ -1,4 +1,4 @@
--- claim all codes
+--// claim all codes
 local Event = game:GetService("ReplicatedStorage").rEvents.codeRemote
 
 local codes = {
@@ -23,7 +23,7 @@ for _, code in ipairs(codes) do
     wait(0.1)
 end
 
--- claim all chest
+--// claim all chest
 local player = game.Players.LocalPlayer
 local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 
@@ -56,9 +56,7 @@ for i, chest in ipairs(chests) do
     end
 end
 
--- AUTO claim all gifts
-while true do
-    for i = 1, 8 do
-        game:GetService("ReplicatedStorage").rEvents.freeGiftClaimRemote:InvokeServer("claimGift", i)
-    end
+--// claim all gifts
+for i = 1, 8 do
+    game:GetService("ReplicatedStorage").rEvents.freeGiftClaimRemote:InvokeServer("claimGift", i)
 end
