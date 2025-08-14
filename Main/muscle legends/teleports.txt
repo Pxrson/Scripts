@@ -20,3 +20,55 @@
 4471, 119, -8836 -- lava brawl  
 960, 17, -7398 -- desert brawl  
 -1849, 20, -6335 -- beach brawl
+
+--// shit
+    ["Bench Press"] = {
+        ["Starter Island"] = CFrame.new(-17.0609932, 3.31417918, -2.48164988),
+        ["Legend Beach"] = CFrame.new(470.334656, 3.31417966, -321.053925),
+        ["Frost Gym"] = CFrame.new(-3013.24194, 39.2158546, -335.036926),
+        ["Mythical Gym"] = CFrame.new(2371.7356, 39.2158546, 1246.31555),
+        ["Eternal Gym"] = CFrame.new(-7176.19141, 45.394104, -1106.31421),
+        ["Legend Gym"] = CFrame.new(4111.91748, 1020.46674, -3799.97217),
+        ["Muscle King Gym"] = CFrame.new(-8590.06152, 46.0167427, -6043.34717),
+        ["Jungle Gym"] = CFrame.new(-8173, 64, 1898)
+    },
+    ["Squat"] = {
+        ["Starter Island"] = CFrame.new(-48.8711243, 3.31417918, -11.8831778),
+        ["Legend Beach"] = CFrame.new(470.334656, 3.31417966, -321.053925),
+        ["Frost Gym"] = CFrame.new(-2933.47998, 29.6399612, -579.946045),
+        ["Mythical Gym"] = CFrame.new(2489.21484, 3.67686629, 849.051025),
+        ["Eternal Gym"] = CFrame.new(-7176.19141, 45.394104, -1106.31421),
+        ["Legend Gym"] = CFrame.new(4304.99023, 987.829956, -4124.2334),
+        ["Muscle King Gym"] = CFrame.new(-8940.12402, 13.1642084, -5699.13477),
+        ["Jungle Gym"] = CFrame.new(-8352, 34, 2878)
+    },
+    ["Deadlift"] = {
+        ["Starter Island"] = CFrame.new(-48.8711243, 3.31417918, -11.8831778),
+        ["Legend Beach"] = CFrame.new(470.334656, 3.31417966, -321.053925),
+        ["Frost Gym"] = CFrame.new(-2933.47998, 29.6399612, -579.946045),
+        ["Mythical Gym"] = CFrame.new(2489.21484, 3.67686629, 849.051025),
+        ["Eternal Gym"] = CFrame.new(-7176.19141, 45.394104, -1106.31421),
+        ["Legend Gym"] = CFrame.new(4304.99023, 987.829956, -4124.2334),
+        ["Muscle King Gym"] = CFrame.new(-8940.12402, 13.1642084, -5699.13477)
+    },
+    ["Pull Up"] = {
+        ["Starter Island"] = CFrame.new(-33.3047485, 3.31417918, -11.8831778),
+        ["Legend Beach"] = CFrame.new(470.334656, 3.31417966, -321.053925),
+        ["Frost Gym"] = CFrame.new(-2933.47998, 29.6399612, -579.946045),
+        ["Mythical Gym"] = CFrame.new(2489.21484, 3.67686629, 849.051025),
+        ["Eternal Gym"] = CFrame.new(-7176.19141, 45.394104, -1106.31421),
+        ["Legend Gym"] = CFrame.new(4304.99023, 987.829956, -4124.2334),
+        ["Muscle King Gym"] = CFrame.new(-8940.12402, 13.1642084, -5699.13477),
+        ["Jungle Gym"] = CFrame.new(-8666, 34, 2070)
+    },
+    ["Boulder"] = {
+        ["Starter Island"] = CFrame.new(-33.3047485, 3.31417918, -11.8831778),
+        ["Legend Beach"] = CFrame.new(470.334656, 3.31417966, -321.053925),
+        ["Frost Gym"] = CFrame.new(-2933.47998, 29.6399612, -579.946045),
+        ["Mythical Gym"] = CFrame.new(2489.21484, 3.67686629, 849.051025),
+        ["Eternal Gym"] = CFrame.new(-7176.19141, 45.394104, -1106.31421),
+        ["Legend Gym"] = CFrame.new(4304.99023, 987.829956, -4124.2334),
+        ["Muscle King Gym"] = CFrame.new(-8940.12402, 13.1642084, -5699.13477),
+        ["Jungle Gym"] = CFrame.new(-8621, 34, 2684)
+    }
+}
