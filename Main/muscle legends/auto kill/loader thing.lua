@@ -1,29 +1,42 @@
 -- discord: .pxrson
-local Players = game:GetService("Players")
-local TeleportService = game:GetService("TeleportService")
-local HttpService = game:GetService("HttpService")
+local plrs = game:GetService("Players")
+local tpsvc = game:GetService("TeleportService")
+local http = game:GetService("HttpService")
 
 local function hop()
-    local data = HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100")).data
+    local success, result = pcall(function()
+        return game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100")
+    end)
+    
+    if not success then
+        tpsvc:Teleport(game.PlaceId, plrs.LocalPlayer)
+        return
+    end
+    
+    local data = http:JSONDecode(result)
     local servers = {}
-    for _, v in ipairs(data) do
+    
+    for _, v in ipairs(data.data) do
         if v.playing < v.maxPlayers and v.id ~= game.JobId then
-            servers[#servers+1] = v.id
+            table.insert(servers, v.id)
         end
     end
+    
     if #servers > 0 then
-        TeleportService:TeleportToPlaceInstance(game.PlaceId, servers[math.random(#servers)], Players.LocalPlayer)
+        tpsvc:TeleportToPlaceInstance(game.PlaceId, servers[math.random(#servers)], plrs.LocalPlayer)
     else
-        TeleportService:Teleport(game.PlaceId, Players.LocalPlayer)
+        tpsvc:Teleport(game.PlaceId, plrs.LocalPlayer)
     end
 end
 
 while true do
-    if #Players:GetPlayers() < 5 then
+    if #plrs:GetPlayers() < 5 then
         hop()
         break
     else
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua", true))()
+        local success = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua", true))()
+        end)
     end
     task.wait(10)
 end
