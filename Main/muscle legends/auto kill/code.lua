@@ -4,7 +4,6 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local VirtualUser = game:GetService("VirtualUser")
-local StarterGui = game:GetService("StarterGui")
 local LocalPlayer = Players.LocalPlayer
 
 local Character, Humanoid, Hand, Punch, Animator
@@ -311,9 +310,3 @@ RunService.RenderStepped:Connect(function()
     local Elapsed = os.time() - StartTime
     ExecLabel.Text = string.format("exec: %02d:%02d:%02d", Elapsed/3600%24, Elapsed/60%60, Elapsed%60)
 end)
-
-StarterGui:SetCore("SendNotification", {
-    Title = "Auto Kill Control",
-    Text = "running",
-    Duration = 5
-})
