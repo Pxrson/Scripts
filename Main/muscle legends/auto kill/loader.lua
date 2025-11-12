@@ -27,6 +27,7 @@ local function Hop()
                     repeat task.wait() until game:IsLoaded()
                     getgenv().AutoStartEnabled = true
                     getgenv().ScriptLoaded = nil
+                    getgenv().AutoKillLoaded = nil
                     loadstring(game:HttpGet('https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua'))()
                 ]])
                 TeleportService:TeleportToPlaceInstance(game.PlaceId, Server.id, LocalPlayer)
