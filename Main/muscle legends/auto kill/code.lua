@@ -124,7 +124,7 @@ Main.Parent = Screen
 Main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 Main.BackgroundTransparency = 0.1
 Main.Position = UDim2.new(0.5, -90, 0.1, 0)
-Main.Size = UDim2.new(0, 180, 0, 95)
+Main.Size = UDim2.new(0, 180, 0, 110)
 
 TitleBar.Parent = Main
 TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
@@ -159,7 +159,7 @@ CloseButton.AutoButtonColor = false
 
 FpsLabel.Parent = Main
 FpsLabel.BackgroundTransparency = 1
-FpsLabel.Position = UDim2.new(0, 8, 0, 24)
+FpsLabel.Position = UDim2.new(0, 8, 0, 26)
 FpsLabel.Size = UDim2.new(1, -10, 0, 18)
 FpsLabel.Font = Enum.Font.Code
 FpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -168,7 +168,7 @@ FpsLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 TimeLabel.Parent = Main
 TimeLabel.BackgroundTransparency = 1
-TimeLabel.Position = UDim2.new(0, 8, 0, 42)
+TimeLabel.Position = UDim2.new(0, 8, 0, 46)
 TimeLabel.Size = UDim2.new(1, -10, 0, 18)
 TimeLabel.Font = Enum.Font.Code
 TimeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -177,7 +177,7 @@ TimeLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 ExecLabel.Parent = Main
 ExecLabel.BackgroundTransparency = 1
-ExecLabel.Position = UDim2.new(0, 8, 0, 60)
+ExecLabel.Position = UDim2.new(0, 8, 0, 66)
 ExecLabel.Size = UDim2.new(1, -10, 0, 18)
 ExecLabel.Font = Enum.Font.Code
 ExecLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -186,8 +186,8 @@ ExecLabel.TextXAlignment = Enum.TextXAlignment.Center
 
 StartButton.Parent = Main
 StartButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-StartButton.Position = UDim2.new(0, 8, 0, 78)
-StartButton.Size = UDim2.new(0, 78, 0, 16)
+StartButton.Position = UDim2.new(0, 8, 0, 88)
+StartButton.Size = UDim2.new(0, 78, 0, 18)
 StartButton.Font = Enum.Font.Code
 StartButton.TextColor3 = Color3.fromRGB(0, 255, 0)
 StartButton.TextSize = 13
@@ -195,12 +195,41 @@ StartButton.Text = "Start"
 
 StopButton.Parent = Main
 StopButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-StopButton.Position = UDim2.new(0, 94, 0, 78)
-StopButton.Size = UDim2.new(0, 78, 0, 16)
+StopButton.Position = UDim2.new(0, 94, 0, 88)
+StopButton.Size = UDim2.new(0, 78, 0, 18)
 StopButton.Font = Enum.Font.Code
 StopButton.TextColor3 = Color3.fromRGB(255, 0, 0)
 StopButton.TextSize = 13
 StopButton.Text = "Stop"
+
+local Dragging = false
+local DragInput, MousePos, FramePos
+
+TitleBar.InputBegan:Connect(function(Input)
+    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+        Dragging = true
+        MousePos = Input.Position
+        FramePos = Main.Position
+        Input.Changed:Connect(function()
+            if Input.UserInputState == Enum.UserInputState.End then
+                Dragging = false
+            end
+        end)
+    end
+end)
+
+TitleBar.InputChanged:Connect(function(Input)
+    if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+        DragInput = Input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(Input)
+    if Input == DragInput and Dragging then
+        local Delta = Input.Position - MousePos
+        Main.Position = UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)
+    end
+end)
 
 StartButton.MouseButton1Click:Connect(function()
     Running = true
