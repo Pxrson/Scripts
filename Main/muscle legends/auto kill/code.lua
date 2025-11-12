@@ -1,101 +1,241 @@
 -- discord: .pxrson
 -- beware of ping getting to high, might ruin your grind !!
-local lp = game:GetService("Players").LocalPlayer
-local rs = game:GetService("RunService")
-local players = game:GetService("Players")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local VirtualUser = game:GetService("VirtualUser")
+local StarterGui = game:GetService("StarterGui")
+local LocalPlayer = Players.LocalPlayer
 
-local animIds = {
+local Character, Humanoid, Hand, Punch, Animator
+local LastAttack, LastRespawn, LastCheck = 0, 0, 0
+local CachedPlayers = {}
+local Running = false
+local StartTime = os.time()
+
+local Animations = {
     ["rbxassetid://3638729053"] = true,
     ["rbxassetid://3638749874"] = true,
     ["rbxassetid://3638767427"] = true,
     ["rbxassetid://102357151005774"] = true
 }
 
-local chr, hum, hnd, pnc, anm
-local lastAtk, lastResp, lastChk, lastPlr = 0, 0, 0, 0
-local cachedPlrs = {}
-
-local function updateAll()
-    chr = lp.Character
-    if chr then
-        hum = chr:FindFirstChildOfClass("Humanoid")
-        hnd = chr:FindFirstChild("LeftHand") or chr:FindFirstChild("Left Arm")
-        anm = hum and (chr:FindFirstChildOfClass("Animator") or hum:FindFirstChildOfClass("Animator"))
-        pnc = chr:FindFirstChild("Punch")
+local function UpdateAll()
+    Character = LocalPlayer.Character
+    if Character then
+        Humanoid = Character:FindFirstChildOfClass("Humanoid")
+        Hand = Character:FindFirstChild("LeftHand") or Character:FindFirstChild("Left Arm")
+        Animator = Humanoid and (Character:FindFirstChildOfClass("Animator") or Humanoid:FindFirstChildOfClass("Animator"))
+        Punch = Character:FindFirstChild("Punch")
     else
-        chr, hum, hnd, anm, pnc = nil, nil, nil, nil, nil
+        Character, Humanoid, Hand, Animator, Punch = nil, nil, nil, nil, nil
     end
-    
-    cachedPlrs = {}
-    for _, plr in ipairs(players:GetPlayers()) do
-        if plr ~= lp then
-            table.insert(cachedPlrs, plr)
+    CachedPlayers = {}
+    for _, Player in ipairs(Players:GetPlayers()) do
+        if Player ~= LocalPlayer then
+            table.insert(CachedPlayers, Player)
         end
     end
 end
 
-lp.CharacterAdded:Connect(updateAll)
-updateAll()
-players.PlayerAdded:Connect(updateAll)
-players.PlayerRemoving:Connect(updateAll)
+LocalPlayer.CharacterAdded:Connect(UpdateAll)
+Players.PlayerAdded:Connect(UpdateAll)
+Players.PlayerRemoving:Connect(UpdateAll)
+UpdateAll()
 
-rs.RenderStepped:Connect(function()
-    local tm = os.clock()
-    
-    if tm - lastAtk < 0.05 then return end
-    lastAtk = tm
-    
-    if not chr or not hum or tm - lastChk > 1 then
-        updateAll()
-        lastChk = tm
-        if not chr or not hum then return end
+RunService.RenderStepped:Connect(function()
+    if not Running then return end
+    local TimeNow = os.clock()
+    if TimeNow - LastAttack < 0.05 then return end
+    LastAttack = TimeNow
+    if not Character or not Humanoid or TimeNow - LastCheck > 1 then
+        UpdateAll()
+        LastCheck = TimeNow
+        if not Character or not Humanoid then return end
     end
-    
-    if not hnd then
-        hnd = chr:FindFirstChild("LeftHand") or chr:FindFirstChild("Left Arm")
-        if not hnd then return end
+    if not Hand then
+        Hand = Character:FindFirstChild("LeftHand") or Character:FindFirstChild("Left Arm")
+        if not Hand then return end
     end
-    
-    if not pnc or not pnc.Parent then
-        pnc = chr:FindFirstChild("Punch")
-        if not pnc then
-            local tool = lp.Backpack:FindFirstChild("Punch")
-            if tool then
-                hum:EquipTool(tool)
-                pnc = chr:FindFirstChild("Punch")
+    if not Punch or not Punch.Parent then
+        Punch = Character:FindFirstChild("Punch")
+        if not Punch then
+            local Tool = LocalPlayer.Backpack:FindFirstChild("Punch")
+            if Tool then
+                Humanoid:EquipTool(Tool)
+                Punch = Character:FindFirstChild("Punch")
             else
-                if tm - lastResp > 3 and hum and hum.Health > 0 then
-                    hum.Health = 0
-                    lastResp = tm
+                if TimeNow - LastRespawn > 3 and Humanoid and Humanoid.Health > 0 then
+                    Humanoid.Health = 0
+                    LastRespawn = TimeNow
                 end
                 return
             end
         end
     end
-    
-    if pnc and pnc.Parent then
-        pnc.attackTime.Value = 0
-        pnc:Activate()
-        
-        for _, plr in ipairs(cachedPlrs) do
-            local chr2 = plr.Character
-            if chr2 and chr2.Parent then
-                local hum2 = chr2:FindFirstChildOfClass("Humanoid")
-                local head = chr2:FindFirstChild("Head")
-                if hum2 and head and hum2.Health > 0 then
-                    firetouchinterest(head, hnd, 0)
-                    firetouchinterest(head, hnd, 1)
+    if Punch and Punch.Parent then
+        Punch.attackTime.Value = 0
+        Punch:Activate()
+        for _, Player in ipairs(CachedPlayers) do
+            local Character2 = Player.Character
+            if Character2 and Character2.Parent then
+                local Humanoid2 = Character2:FindFirstChildOfClass("Humanoid")
+                local Head = Character2:FindFirstChild("Head")
+                if Humanoid2 and Head and Humanoid2.Health > 0 then
+                    firetouchinterest(Head, Hand, 0)
+                    firetouchinterest(Head, Hand, 1)
                 end
             end
         end
-        
-        if anm then
-            for _, trk in ipairs(anm:GetPlayingAnimationTracks()) do
-                local anim = trk.Animation
-                if anim and animIds[anim.AnimationId] then
-                    trk:Stop()
+        if Animator then
+            for _, Track in ipairs(Animator:GetPlayingAnimationTracks()) do
+                local Animation = Track.Animation
+                if Animation and Animations[Animation.AnimationId] then
+                    Track:Stop()
                 end
             end
         end
     end
 end)
+
+LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+local Screen = Instance.new("ScreenGui")
+local Main = Instance.new("Frame")
+local MainCorner = Instance.new("UICorner")
+local TitleBar = Instance.new("Frame")
+local TitleCorner = Instance.new("UICorner")
+local FpsLabel = Instance.new("TextLabel")
+local TimeLabel = Instance.new("TextLabel")
+local ExecLabel = Instance.new("TextLabel")
+local StartButton = Instance.new("TextButton")
+local StopButton = Instance.new("TextButton")
+
+Screen.Parent = game:GetService("CoreGui")
+Screen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Screen.ResetOnSpawn = false
+
+Main.Parent = Screen
+Main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Main.BackgroundTransparency = 0.1
+Main.Position = UDim2.new(0.8, 0, 0.1, 0)
+Main.Size = UDim2.new(0, 180, 0, 95)
+
+TitleBar.Parent = Main
+TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+TitleBar.BackgroundTransparency = 0.1
+TitleBar.Size = UDim2.new(1, 0, 0, 22)
+
+TitleCorner.Parent = TitleBar
+TitleCorner.CornerRadius = UDim.new(0, 4)
+
+MainCorner.Parent = Main
+MainCorner.CornerRadius = UDim.new(0, 4)
+
+local function CreateLabel(Position)
+    local Label = Instance.new("TextLabel")
+    Label.Parent = Main
+    Label.BackgroundTransparency = 1
+    Label.Position = Position
+    Label.Size = UDim2.new(1, -10, 0, 18)
+    Label.Font = Enum.Font.Code
+    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Label.TextSize = 13
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+    return Label
+end
+
+FpsLabel = CreateLabel(UDim2.new(0, 8, 0, 24))
+TimeLabel = CreateLabel(UDim2.new(0, 8, 0, 42))
+ExecLabel = CreateLabel(UDim2.new(0, 8, 0, 60))
+
+local Dragging = false
+local DragStart
+local StartPosition
+local DragConnection
+
+local function UpdateDrag(Current)
+    local Delta = Current - DragStart
+    local Viewport = workspace.CurrentCamera.ViewportSize
+    local NewX = math.max(0, math.min(Viewport.X - Main.AbsoluteSize.X, StartPosition.X + Delta.X))
+    local NewY = math.max(0, math.min(Viewport.Y - Main.AbsoluteSize.Y, StartPosition.Y + Delta.Y))
+    Main.Position = UDim2.new(0, NewX, 0, NewY)
+end
+
+TitleBar.InputBegan:Connect(function(Input)
+    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+        Dragging = true
+        DragStart = Input.Position
+        StartPosition = Vector2.new(Main.AbsolutePosition.X, Main.AbsolutePosition.Y)
+        DragConnection = UserInputService.InputChanged:Connect(function(Change)
+            if Dragging and (Change.UserInputType == Enum.UserInputType.MouseMovement or Change.UserInputType == Enum.UserInputType.Touch) then
+                UpdateDrag(Change.Position)
+            end
+        end)
+        local EndConnection
+        EndConnection = UserInputService.InputEnded:Connect(function(Change)
+            if Change.UserInputType == Enum.UserInputType.MouseButton1 or Change.UserInputType == Enum.UserInputType.Touch then
+                Dragging = false
+                if DragConnection then
+                    DragConnection:Disconnect()
+                    DragConnection = nil
+                end
+                EndConnection:Disconnect()
+            end
+        end)
+    end
+end)
+
+local Title = Instance.new("TextLabel")
+Title.Parent = TitleBar
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 8, 0, 0)
+Title.Size = UDim2.new(1, -16, 1, 0)
+Title.Font = Enum.Font.Code
+Title.Text = "Auto Kill Control"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 13
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+StartButton.Parent = Main
+StartButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+StartButton.Position = UDim2.new(0, 8, 0, 78)
+StartButton.Size = UDim2.new(0, 78, 0, 16)
+StartButton.Font = Enum.Font.Code
+StartButton.TextColor3 = Color3.fromRGB(0, 255, 0)
+StartButton.TextSize = 13
+StartButton.Text = "Start"
+
+StopButton.Parent = Main
+StopButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+StopButton.Position = UDim2.new(0, 94, 0, 78)
+StopButton.Size = UDim2.new(0, 78, 0, 16)
+StopButton.Font = Enum.Font.Code
+StopButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+StopButton.TextSize = 13
+StopButton.Text = "Stop"
+
+StartButton.MouseButton1Click:Connect(function()
+    Running = true
+    StartTime = os.time()
+end)
+
+StopButton.MouseButton1Click:Connect(function()
+    Running = false
+end)
+
+RunService.RenderStepped:Connect(function()
+    FpsLabel.Text = "fps: " .. math.floor(1/RunService.RenderStepped:Wait())
+    TimeLabel.Text = "time: " .. os.date("%H:%M:%S")
+    local Elapsed = os.time() - StartTime
+    ExecLabel.Text = string.format("exec: %02d:%02d:%02d", Elapsed/3600%24, Elapsed/60%60, Elapsed%60)
+end)
+
+StarterGui:SetCore("SendNotification", {
+    Title = "Auto Kill Control",
+    Text = "running",
+    Duration = 5
+})
