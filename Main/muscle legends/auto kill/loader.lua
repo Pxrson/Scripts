@@ -1,30 +1,42 @@
-local plrs = game:GetService("Players")
-local tpsvc = game:GetService("TeleportService")
-local http = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+local LocalPlayer = Players.LocalPlayer
+local Cursor = nil
+local Threshold = 5
 
-queue_on_teleport([[
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua", true))()
-]])
+local function GetServers()
+    local Url = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100" .. (Cursor and ("&cursor=" .. Cursor) or "")
+    local Response = game:HttpGet(Url)
+    local Data = HttpService:JSONDecode(Response)
+    Cursor = Data.nextPageCursor
+    return Data.data
+end
 
-local function hop()
-    local res = game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100")
-    local data = http:JSONDecode(res)
-
-    for _, v in ipairs(data.data) do
-        if v.playing < v.maxPlayers and v.id ~= game.JobId then
-            return tpsvc:TeleportToPlaceInstance(game.PlaceId, v.id, plrs.LocalPlayer)
+local function Hop()
+    while true do
+        local List = GetServers()
+        for _, Server in ipairs(List) do
+            if Server.playing >= Threshold and Server.playing < Server.maxPlayers and Server.id ~= game.JobId then
+                queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua'))()")
+                TeleportService:TeleportToPlaceInstance(game.PlaceId, Server.id, LocalPlayer)
+                return
+            end
         end
+        if not Cursor then
+            Cursor = nil
+        end
+        task.wait(1)
     end
-
-    tpsvc:Teleport(game.PlaceId, plrs.LocalPlayer)
 end
 
 while true do
-    if #plrs:GetPlayers() < 5 then
-        hop()
+    local Count = #Players:GetPlayers()
+    if Count >= Threshold then
+        Hop()
         break
     else
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua", true))()
+        task.wait(10)
     end
-    task.wait(10)
 end
