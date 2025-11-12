@@ -40,6 +40,17 @@ local function UpdateWhitelist()
                 end
             end
         end
+    else
+        for _, targetPlayer in ipairs(Players:GetPlayers()) do
+            if targetPlayer ~= LocalPlayer and targetPlayer:IsFriendsWith(LocalPlayer.UserId) then
+                local playerName = targetPlayer.Name
+                for i = #getgenv().WhitelistedPlayers, 1, -1 do
+                    if getgenv().WhitelistedPlayers[i]:lower() == playerName:lower() then
+                        table.remove(getgenv().WhitelistedPlayers, i)
+                    end
+                end
+            end
+        end
     end
 end
 
