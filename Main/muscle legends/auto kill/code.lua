@@ -108,6 +108,8 @@ local Main = Instance.new("Frame")
 local MainCorner = Instance.new("UICorner")
 local TitleBar = Instance.new("Frame")
 local TitleCorner = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local CloseButton = Instance.new("TextButton")
 local FpsLabel = Instance.new("TextLabel")
 local TimeLabel = Instance.new("TextLabel")
 local ExecLabel = Instance.new("TextLabel")
@@ -121,7 +123,7 @@ Screen.ResetOnSpawn = false
 Main.Parent = Screen
 Main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 Main.BackgroundTransparency = 0.1
-Main.Position = UDim2.new(0.8, 0, 0.1, 0)
+Main.Position = UDim2.new(0.5, -90, 0.1, 0)
 Main.Size = UDim2.new(0, 180, 0, 95)
 
 TitleBar.Parent = Main
@@ -135,70 +137,52 @@ TitleCorner.CornerRadius = UDim.new(0, 4)
 MainCorner.Parent = Main
 MainCorner.CornerRadius = UDim.new(0, 4)
 
-local function CreateLabel(Position)
-    local Label = Instance.new("TextLabel")
-    Label.Parent = Main
-    Label.BackgroundTransparency = 1
-    Label.Position = Position
-    Label.Size = UDim2.new(1, -10, 0, 18)
-    Label.Font = Enum.Font.Code
-    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Label.TextSize = 13
-    Label.TextXAlignment = Enum.TextXAlignment.Left
-    return Label
-end
-
-FpsLabel = CreateLabel(UDim2.new(0, 8, 0, 24))
-TimeLabel = CreateLabel(UDim2.new(0, 8, 0, 42))
-ExecLabel = CreateLabel(UDim2.new(0, 8, 0, 60))
-
-local Dragging = false
-local DragStart
-local StartPosition
-local DragConnection
-
-local function UpdateDrag(Current)
-    local Delta = Current - DragStart
-    local Viewport = workspace.CurrentCamera.ViewportSize
-    local NewX = math.max(0, math.min(Viewport.X - Main.AbsoluteSize.X, StartPosition.X + Delta.X))
-    local NewY = math.max(0, math.min(Viewport.Y - Main.AbsoluteSize.Y, StartPosition.Y + Delta.Y))
-    Main.Position = UDim2.new(0, NewX, 0, NewY)
-end
-
-TitleBar.InputBegan:Connect(function(Input)
-    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-        Dragging = true
-        DragStart = Input.Position
-        StartPosition = Vector2.new(Main.AbsolutePosition.X, Main.AbsolutePosition.Y)
-        DragConnection = UserInputService.InputChanged:Connect(function(Change)
-            if Dragging and (Change.UserInputType == Enum.UserInputType.MouseMovement or Change.UserInputType == Enum.UserInputType.Touch) then
-                UpdateDrag(Change.Position)
-            end
-        end)
-        local EndConnection
-        EndConnection = UserInputService.InputEnded:Connect(function(Change)
-            if Change.UserInputType == Enum.UserInputType.MouseButton1 or Change.UserInputType == Enum.UserInputType.Touch then
-                Dragging = false
-                if DragConnection then
-                    DragConnection:Disconnect()
-                    DragConnection = nil
-                end
-                EndConnection:Disconnect()
-            end
-        end)
-    end
-end)
-
-local Title = Instance.new("TextLabel")
 Title.Parent = TitleBar
 Title.BackgroundTransparency = 1
 Title.Position = UDim2.new(0, 8, 0, 0)
-Title.Size = UDim2.new(1, -16, 1, 0)
+Title.Size = UDim2.new(1, -32, 1, 0)
 Title.Font = Enum.Font.Code
 Title.Text = "Auto Kill Control"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextSize = 13
 Title.TextXAlignment = Enum.TextXAlignment.Left
+
+CloseButton.Parent = TitleBar
+CloseButton.BackgroundTransparency = 1
+CloseButton.Position = UDim2.new(1, -20, 0, 0)
+CloseButton.Size = UDim2.new(0, 20, 1, 0)
+CloseButton.Font = Enum.Font.Code
+CloseButton.Text = "×"
+CloseButton.TextSize = 14
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.AutoButtonColor = false
+
+FpsLabel.Parent = Main
+FpsLabel.BackgroundTransparency = 1
+FpsLabel.Position = UDim2.new(0, 8, 0, 24)
+FpsLabel.Size = UDim2.new(1, -10, 0, 18)
+FpsLabel.Font = Enum.Font.Code
+FpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+FpsLabel.TextSize = 13
+FpsLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+TimeLabel.Parent = Main
+TimeLabel.BackgroundTransparency = 1
+TimeLabel.Position = UDim2.new(0, 8, 0, 42)
+TimeLabel.Size = UDim2.new(1, -10, 0, 18)
+TimeLabel.Font = Enum.Font.Code
+TimeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TimeLabel.TextSize = 13
+TimeLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+ExecLabel.Parent = Main
+ExecLabel.BackgroundTransparency = 1
+ExecLabel.Position = UDim2.new(0, 8, 0, 60)
+ExecLabel.Size = UDim2.new(1, -10, 0, 18)
+ExecLabel.Font = Enum.Font.Code
+ExecLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+ExecLabel.TextSize = 13
+ExecLabel.TextXAlignment = Enum.TextXAlignment.Center
 
 StartButton.Parent = Main
 StartButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -225,6 +209,10 @@ end)
 
 StopButton.MouseButton1Click:Connect(function()
     Running = false
+end)
+
+CloseButton.MouseButton1Click:Connect(function()
+    Screen:Destroy()
 end)
 
 RunService.RenderStepped:Connect(function()
