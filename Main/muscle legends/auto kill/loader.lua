@@ -4,7 +4,6 @@ local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
 local Cursor = nil
 local Threshold = 5
-local ScriptExecuted = false
 
 local function GetServers()
     local Url = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100" .. (Cursor and ("&cursor=" .. Cursor) or "")
@@ -30,16 +29,14 @@ local function Hop()
         end
         if not Cursor then
             Cursor = nil
+            break
         end
         task.wait(1)
     end
 end
 
-if not ScriptExecuted then
-    getgenv().AutoStartEnabled = true
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua", true))()
-    ScriptExecuted = true
-end
+getgenv().AutoStartEnabled = true
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua", true))()
 
 spawn(function()
     while true do
