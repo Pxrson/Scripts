@@ -5,6 +5,11 @@ local LocalPlayer = Players.LocalPlayer
 local Cursor = nil
 local Threshold = 5
 
+if getgenv().ScriptLoaded then
+    return
+end
+getgenv().ScriptLoaded = true
+
 local function GetServers()
     local Url = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100" .. (Cursor and ("&cursor=" .. Cursor) or "")
     local Response = game:HttpGet(Url)
@@ -21,6 +26,7 @@ local function Hop()
                 queue_on_teleport([[
                     repeat task.wait() until game:IsLoaded()
                     getgenv().AutoStartEnabled = true
+                    getgenv().ScriptLoaded = nil
                     loadstring(game:HttpGet('https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua'))()
                 ]])
                 TeleportService:TeleportToPlaceInstance(game.PlaceId, Server.id, LocalPlayer)
