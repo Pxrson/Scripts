@@ -12,6 +12,9 @@ local LastAttack, LastRespawn, LastCheck = 0, 0, 0
 local CachedPlayers = {}
 local Running = false
 local StartTime = os.time()
+local WhitelistFriends = false
+
+getgenv().WhitelistedPlayers = getgenv().WhitelistedPlayers or {}
 
 local Animations = {
     ["rbxassetid://3638729053"] = true,
@@ -19,6 +22,35 @@ local Animations = {
     ["rbxassetid://3638767427"] = true,
     ["rbxassetid://102357151005774"] = true
 }
+
+local function UpdateWhitelist()
+    if WhitelistFriends then
+        for _, targetPlayer in ipairs(Players:GetPlayers()) do
+            if targetPlayer ~= LocalPlayer and targetPlayer:IsFriendsWith(LocalPlayer.UserId) then
+                local playerName = targetPlayer.Name
+                local alreadyWhitelisted = false
+                for _, name in ipairs(getgenv().WhitelistedPlayers) do
+                    if name:lower() == playerName:lower() then
+                        alreadyWhitelisted = true
+                        break
+                    end
+                end
+                if not alreadyWhitelisted then
+                    table.insert(getgenv().WhitelistedPlayers, playerName)
+                end
+            end
+        end
+    end
+end
+
+local function IsWhitelisted(player)
+    for _, name in ipairs(getgenv().WhitelistedPlayers) do
+        if name:lower() == player.Name:lower() then
+            return true
+        end
+    end
+    return false
+end
 
 local function UpdateAll()
     Character = LocalPlayer.Character
@@ -32,14 +64,17 @@ local function UpdateAll()
     end
     CachedPlayers = {}
     for _, Player in ipairs(Players:GetPlayers()) do
-        if Player ~= LocalPlayer then
+        if Player ~= LocalPlayer and not IsWhitelisted(Player) then
             table.insert(CachedPlayers, Player)
         end
     end
 end
 
 LocalPlayer.CharacterAdded:Connect(UpdateAll)
-Players.PlayerAdded:Connect(UpdateAll)
+Players.PlayerAdded:Connect(function()
+    UpdateWhitelist()
+    UpdateAll()
+end)
 Players.PlayerRemoving:Connect(UpdateAll)
 UpdateAll()
 
@@ -113,6 +148,7 @@ local CloseButton = Instance.new("TextButton")
 local FpsLabel = Instance.new("TextLabel")
 local TimeLabel = Instance.new("TextLabel")
 local ExecLabel = Instance.new("TextLabel")
+local WhitelistToggle = Instance.new("TextButton")
 local StartButton = Instance.new("TextButton")
 local StopButton = Instance.new("TextButton")
 
@@ -124,7 +160,7 @@ Main.Parent = Screen
 Main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 Main.BackgroundTransparency = 0.1
 Main.Position = UDim2.new(0.5, -90, 0.1, 0)
-Main.Size = UDim2.new(0, 180, 0, 110)
+Main.Size = UDim2.new(0, 180, 0, 130)
 
 TitleBar.Parent = Main
 TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
@@ -184,9 +220,18 @@ ExecLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 ExecLabel.TextSize = 13
 ExecLabel.TextXAlignment = Enum.TextXAlignment.Center
 
+WhitelistToggle.Parent = Main
+WhitelistToggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+WhitelistToggle.Position = UDim2.new(0, 8, 0, 88)
+WhitelistToggle.Size = UDim2.new(1, -16, 0, 18)
+WhitelistToggle.Font = Enum.Font.Code
+WhitelistToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+WhitelistToggle.TextSize = 13
+WhitelistToggle.Text = "Whitelist Friends: OFF"
+
 StartButton.Parent = Main
 StartButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-StartButton.Position = UDim2.new(0, 8, 0, 88)
+StartButton.Position = UDim2.new(0, 8, 0, 108)
 StartButton.Size = UDim2.new(0, 78, 0, 18)
 StartButton.Font = Enum.Font.Code
 StartButton.TextColor3 = Color3.fromRGB(0, 255, 0)
@@ -195,7 +240,7 @@ StartButton.Text = "Start"
 
 StopButton.Parent = Main
 StopButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-StopButton.Position = UDim2.new(0, 94, 0, 88)
+StopButton.Position = UDim2.new(0, 94, 0, 108)
 StopButton.Size = UDim2.new(0, 78, 0, 18)
 StopButton.Font = Enum.Font.Code
 StopButton.TextColor3 = Color3.fromRGB(255, 0, 0)
@@ -229,6 +274,14 @@ UserInputService.InputChanged:Connect(function(Input)
         local Delta = Input.Position - MousePos
         Main.Position = UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)
     end
+end)
+
+WhitelistToggle.MouseButton1Click:Connect(function()
+    WhitelistFriends = not WhitelistFriends
+    WhitelistToggle.Text = "Whitelist Friends: " .. (WhitelistFriends and "ON" or "OFF")
+    WhitelistToggle.TextColor3 = WhitelistFriends and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 255, 255)
+    UpdateWhitelist()
+    UpdateAll()
 end)
 
 StartButton.MouseButton1Click:Connect(function()
