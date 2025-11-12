@@ -19,7 +19,11 @@ local function Hop()
         local List = GetServers()
         for _, Server in ipairs(List) do
             if Server.playing >= Threshold and Server.playing < Server.maxPlayers and Server.id ~= game.JobId then
-                queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua'))()")
+                queue_on_teleport([[
+                    repeat task.wait() until game:IsLoaded()
+                    getgenv().AutoStartEnabled = true
+                    loadstring(game:HttpGet('https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua'))()
+                ]])
                 TeleportService:TeleportToPlaceInstance(game.PlaceId, Server.id, LocalPlayer)
                 return
             end
@@ -32,6 +36,7 @@ local function Hop()
 end
 
 if not ScriptExecuted then
+    getgenv().AutoStartEnabled = true
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Pxrson/Scripts/refs/heads/main/Main/muscle%20legends/auto%20kill/code.lua", true))()
     ScriptExecuted = true
 end
@@ -40,7 +45,7 @@ spawn(function()
     while true do
         task.wait(5)
         local Count = #Players:GetPlayers()
-        if Count >= Threshold then
+        if Count <= Threshold then
             Hop()
             break
         end
