@@ -13,6 +13,10 @@ local Running = false
 local StartTime = os.time()
 local WhitelistFriends = false
 
+if getgenv().AutoStartEnabled then
+    Running = true
+end
+
 getgenv().WhitelistedPlayers = getgenv().WhitelistedPlayers or {}
 
 local Animations = {
