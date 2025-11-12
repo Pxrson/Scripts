@@ -6,6 +6,11 @@ local UserInputService = game:GetService("UserInputService")
 local VirtualUser = game:GetService("VirtualUser")
 local LocalPlayer = Players.LocalPlayer
 
+if getgenv().AutoKillLoaded then
+    return
+end
+getgenv().AutoKillLoaded = true
+
 local Character, Humanoid, Hand, Punch, Animator
 local LastAttack, LastRespawn, LastCheck = 0, 0, 0
 local Running = false
@@ -226,7 +231,7 @@ ExecLabel.Size = UDim2.new(1, -10, 0, 18)
 ExecLabel.Font = Enum.Font.Code
 ExecLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 ExecLabel.TextSize = 13
-ExecLabel.TextXAlignment = Enum.TextXAlignment.Center
+ExecLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 WhitelistToggle.Parent = Main
 WhitelistToggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
