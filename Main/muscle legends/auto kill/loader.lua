@@ -11,7 +11,7 @@ end
 getgenv().ScriptLoaded = true
 
 local function GetServers()
-    local Url = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100" .. (Cursor and ("&cursor=" .. Cursor) or "")
+    local Url = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Desc&limit=100" .. (Cursor and ("&cursor=" .. Cursor) or "")
     local Response = game:HttpGet(Url)
     local Data = HttpService:JSONDecode(Response)
     Cursor = Data.nextPageCursor
