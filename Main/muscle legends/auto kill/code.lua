@@ -9,7 +9,6 @@ local LocalPlayer = Players.LocalPlayer
 
 local Character, Humanoid, Hand, Punch, Animator
 local LastAttack, LastRespawn, LastCheck = 0, 0, 0
-local CachedPlayers = {}
 local Running = false
 local StartTime = os.time()
 local WhitelistFriends = false
@@ -55,6 +54,7 @@ local function UpdateWhitelist()
 end
 
 local function IsWhitelisted(player)
+    if not WhitelistFriends then return false end
     for _, name in ipairs(getgenv().WhitelistedPlayers) do
         if name:lower() == player.Name:lower() then
             return true
@@ -73,20 +73,12 @@ local function UpdateAll()
     else
         Character, Humanoid, Hand, Animator, Punch = nil, nil, nil, nil, nil
     end
-    CachedPlayers = {}
-    for _, Player in ipairs(Players:GetPlayers()) do
-        if Player ~= LocalPlayer and not IsWhitelisted(Player) then
-            table.insert(CachedPlayers, Player)
-        end
-    end
 end
 
 LocalPlayer.CharacterAdded:Connect(UpdateAll)
 Players.PlayerAdded:Connect(function()
     UpdateWhitelist()
-    UpdateAll()
 end)
-Players.PlayerRemoving:Connect(UpdateAll)
 UpdateAll()
 
 RunService.RenderStepped:Connect(function()
@@ -122,14 +114,16 @@ RunService.RenderStepped:Connect(function()
     if Punch and Punch.Parent then
         Punch.attackTime.Value = 0
         Punch:Activate()
-        for _, Player in ipairs(CachedPlayers) do
-            local Character2 = Player.Character
-            if Character2 and Character2.Parent then
-                local Humanoid2 = Character2:FindFirstChildOfClass("Humanoid")
-                local Head = Character2:FindFirstChild("Head")
-                if Humanoid2 and Head and Humanoid2.Health > 0 then
-                    firetouchinterest(Head, Hand, 0)
-                    firetouchinterest(Head, Hand, 1)
+        for _, Player in ipairs(Players:GetPlayers()) do
+            if Player ~= LocalPlayer and not IsWhitelisted(Player) then
+                local Character2 = Player.Character
+                if Character2 and Character2.Parent then
+                    local Humanoid2 = Character2:FindFirstChildOfClass("Humanoid")
+                    local Head = Character2:FindFirstChild("Head")
+                    if Humanoid2 and Head and Humanoid2.Health > 0 then
+                        firetouchinterest(Head, Hand, 0)
+                        firetouchinterest(Head, Hand, 1)
+                    end
                 end
             end
         end
@@ -292,7 +286,6 @@ WhitelistToggle.MouseButton1Click:Connect(function()
     WhitelistToggle.Text = "Whitelist Friends: " .. (WhitelistFriends and "ON" or "OFF")
     WhitelistToggle.TextColor3 = WhitelistFriends and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 255, 255)
     UpdateWhitelist()
-    UpdateAll()
 end)
 
 StartButton.MouseButton1Click:Connect(function()
