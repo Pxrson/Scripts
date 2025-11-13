@@ -162,11 +162,27 @@ local function UpdateAll()
     end
 end
 
-LocalPlayer.CharacterAdded:Connect(UpdateAll)
+local function UpdateAntiKnockback()
+    local RootPart = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if RootPart and not getgenv().AntiKnockbackVelocity then
+        getgenv().AntiKnockbackVelocity = Instance.new("BodyVelocity")
+        getgenv().AntiKnockbackVelocity.MaxForce = Vector3.new(100000, 0, 100000)
+        getgenv().AntiKnockbackVelocity.Velocity = Vector3.new(0, 0, 0)
+        getgenv().AntiKnockbackVelocity.P = 1250
+        getgenv().AntiKnockbackVelocity.Parent = RootPart
+    end
+end
+
+LocalPlayer.CharacterAdded:Connect(function()
+    UpdateAll()
+    task.wait(1)
+    UpdateAntiKnockback()
+end)
 Players.PlayerAdded:Connect(function()
     UpdateWhitelist()
 end)
 UpdateAll()
+UpdateAntiKnockback()
 
 if not getgenv().AnimBlockConnection then
     getgenv().AnimBlockConnection = RunService.RenderStepped:Connect(function()
