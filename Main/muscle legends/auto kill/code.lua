@@ -1,9 +1,8 @@
--- discord: .pxrson
--- beware of ping getting to high, might ruin your grind !!
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local VirtualUser = game:GetService("VirtualUser")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 
 if getgenv().AutoKillLoaded then
@@ -29,6 +28,12 @@ local Animations = {
     ["rbxassetid://3638767427"] = true,
     ["rbxassetid://102357151005774"] = true
 }
+
+for _, obj in pairs(ReplicatedStorage:GetChildren()) do
+    if obj.Name:match("Frame$") then
+        obj.Visible = false
+    end
+end
 
 local function UpdateWhitelist()
     if WhitelistFriends then
@@ -140,6 +145,7 @@ RunService.RenderStepped:Connect(function()
                 local Animation = Track.Animation
                 if Animation and Animations[Animation.AnimationId] then
                     Track:Stop()
+                    Track:Destroy()
                 end
             end
         end
@@ -254,7 +260,7 @@ StartButton.Text = "Start"
 StopButton.Parent = Main
 StopButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 StopButton.Position = UDim2.new(0, 94, 0, 108)
-StopButton.Size = UDim2.new(0, 78, 0, 18)
+StopButton.Size = UDim2.com(0, 78, 0, 18)
 StopButton.Font = Enum.Font.Code
 StopButton.TextColor3 = Color3.fromRGB(255, 0, 0)
 StopButton.TextSize = 13
