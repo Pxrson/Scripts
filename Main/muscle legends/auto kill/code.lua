@@ -15,6 +15,7 @@ local LastAttack, LastRespawn, LastCheck = 0, 0, 0
 local Running = false
 local StartTime = os.time()
 local WhitelistFriends = false
+local KillOnlyWeaker = false
 
 if getgenv().AutoStartEnabled then
     Running = true
@@ -22,7 +23,7 @@ end
 
 getgenv().WhitelistedPlayers = getgenv().WhitelistedPlayers or {}
 
-local Animations = {
+local BlockedAnimations = {
     ["rbxassetid://3638729053"] = true,
     ["rbxassetid://3638749874"] = true,
     ["rbxassetid://3638767427"] = true,
@@ -33,6 +34,68 @@ for _, obj in pairs(ReplicatedStorage:GetChildren()) do
     if obj.Name:match("Frame$") then
         obj.Visible = false
     end
+end
+
+local function GetPlayerStatValue(Player, StatNames)
+    if not Player then return nil end
+    if type(StatNames) == "string" then StatNames = {StatNames} end
+    for _, Name in ipairs(StatNames) do
+        local Attr
+        if typeof(Player.GetAttribute) == "function" then
+            Attr = Player:GetAttribute(Name)
+        end
+        if Attr ~= nil then return tonumber(Attr) end
+    end
+    local Leaderstats = Player:FindFirstChild("leaderstats")
+    if Leaderstats then
+        for _, Name in ipairs(StatNames) do
+            local V = Leaderstats:FindFirstChild(Name)
+            if V and V.Value ~= nil then return tonumber(V.Value) end
+        end
+    end
+    if Player.Character then
+        for _, Name in ipairs(StatNames) do
+            local V = Player.Character:FindFirstChild(Name)
+            if V and V.Value ~= nil then return tonumber(V.Value) end
+        end
+    end
+    return nil
+end
+
+local function GetLocalPlayerDamage()
+    return GetPlayerStatValue(LocalPlayer, {"Damage","DMG","Attack","Strength","Str"}) or 1
+end
+
+local function CalculatePlayerHealth(Player)
+    local Total = 0
+    if Player then
+        local Durability = Player:FindFirstChild("Durability")
+        if Durability then Total = Durability.Value end
+
+        local EquippedPets = Player:FindFirstChild("equippedPets")
+        local PetsHealth = 0
+        if EquippedPets then
+            for _, Pet in pairs(EquippedPets:GetChildren()) do
+                if Pet and Pet.Value and Pet.Value.Parent and Player.Character and Pet.Value.Parent == Player.Character then
+                    if Pet.Value.Name == "Small Fry" then
+                        PetsHealth = PetsHealth + 25
+                    elseif Pet.Value.Name == "Mighty Monster" then
+                        PetsHealth = PetsHealth + 50
+                    end
+                end
+            end
+        end
+
+        local UltFolder = Player:FindFirstChild("ultimatesFolder")
+        local UltimateHealth = 0
+        if UltFolder then
+            local Infernal = UltFolder:FindFirstChild("Infernal Health")
+            if Infernal then UltimateHealth = Infernal.Value end
+        end
+
+        Total = Total * ((PetsHealth + UltimateHealth * 10) / 100 + 1)
+    end
+    return Total
 end
 
 local function UpdateWhitelist()
@@ -76,6 +139,17 @@ local function IsWhitelisted(player)
     return false
 end
 
+local function ShouldKillPlayer(player)
+    if not KillOnlyWeaker then return true end
+    local MyDamage = GetLocalPlayerDamage()
+    local Health = CalculatePlayerHealth(player)
+    if Health and MyDamage and MyDamage > 0 then
+        local HitsNeeded = math.ceil(Health / MyDamage)
+        return HitsNeeded <= 5
+    end
+    return true
+end
+
 local function UpdateAll()
     Character = LocalPlayer.Character
     if Character then
@@ -93,6 +167,22 @@ Players.PlayerAdded:Connect(function()
     UpdateWhitelist()
 end)
 UpdateAll()
+
+if not getgenv().AnimBlockConnection then
+    getgenv().AnimBlockConnection = RunService.RenderStepped:Connect(function()
+        if Character and Humanoid then
+            for _, Track in ipairs(Humanoid:GetPlayingAnimationTracks()) do
+                if Track.Animation then
+                    local AnimId = Track.Animation.AnimationId
+                    local AnimName = Track.Name:lower()
+                    if BlockedAnimations[AnimId] or AnimName:match("punch") or AnimName:match("attack") then
+                        Track:Stop()
+                    end
+                end
+            end
+        end
+    end)
+end
 
 RunService.RenderStepped:Connect(function()
     if not Running then return end
@@ -128,7 +218,7 @@ RunService.RenderStepped:Connect(function()
         Punch.attackTime.Value = 0
         Punch:Activate()
         for _, Player in ipairs(Players:GetPlayers()) do
-            if Player ~= LocalPlayer and not IsWhitelisted(Player) then
+            if Player ~= LocalPlayer and not IsWhitelisted(Player) and ShouldKillPlayer(Player) then
                 local Character2 = Player.Character
                 if Character2 and Character2.Parent then
                     local Humanoid2 = Character2:FindFirstChildOfClass("Humanoid")
@@ -137,15 +227,6 @@ RunService.RenderStepped:Connect(function()
                         firetouchinterest(Head, Hand, 0)
                         firetouchinterest(Head, Hand, 1)
                     end
-                end
-            end
-        end
-        if Animator then
-            for _, Track in ipairs(Animator:GetPlayingAnimationTracks()) do
-                local Animation = Track.Animation
-                if Animation and Animations[Animation.AnimationId] then
-                    Track:Stop()
-                    Track:Destroy()
                 end
             end
         end
@@ -168,6 +249,7 @@ local FpsLabel = Instance.new("TextLabel")
 local TimeLabel = Instance.new("TextLabel")
 local ExecLabel = Instance.new("TextLabel")
 local WhitelistToggle = Instance.new("TextButton")
+local WeakerToggle = Instance.new("TextButton")
 local StartButton = Instance.new("TextButton")
 local StopButton = Instance.new("TextButton")
 
@@ -179,7 +261,7 @@ Main.Parent = Screen
 Main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 Main.BackgroundTransparency = 0.1
 Main.Position = UDim2.new(0.5, -90, 0.1, 0)
-Main.Size = UDim2.new(0, 180, 0, 130)
+Main.Size = UDim2.new(0, 180, 0, 150)
 
 TitleBar.Parent = Main
 TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
@@ -248,9 +330,18 @@ WhitelistToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
 WhitelistToggle.TextSize = 13
 WhitelistToggle.Text = "Whitelist Friends: OFF"
 
+WeakerToggle.Parent = Main
+WeakerToggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+WeakerToggle.Position = UDim2.new(0, 8, 0, 108)
+WeakerToggle.Size = UDim2.new(1, -16, 0, 18)
+WeakerToggle.Font = Enum.Font.Code
+WeakerToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+WeakerToggle.TextSize = 13
+WeakerToggle.Text = "Kill Weaker Only: OFF"
+
 StartButton.Parent = Main
 StartButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-StartButton.Position = UDim2.new(0, 8, 0, 108)
+StartButton.Position = UDim2.new(0, 8, 0, 128)
 StartButton.Size = UDim2.new(0, 78, 0, 18)
 StartButton.Font = Enum.Font.Code
 StartButton.TextColor3 = Color3.fromRGB(0, 255, 0)
@@ -259,8 +350,8 @@ StartButton.Text = "Start"
 
 StopButton.Parent = Main
 StopButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-StopButton.Position = UDim2.new(0, 94, 0, 108)
-StopButton.Size = UDim2.com(0, 78, 0, 18)
+StopButton.Position = UDim2.new(0, 94, 0, 128)
+StopButton.Size = UDim2.new(0, 78, 0, 18)
 StopButton.Font = Enum.Font.Code
 StopButton.TextColor3 = Color3.fromRGB(255, 0, 0)
 StopButton.TextSize = 13
@@ -300,6 +391,12 @@ WhitelistToggle.MouseButton1Click:Connect(function()
     WhitelistToggle.Text = "Whitelist Friends: " .. (WhitelistFriends and "ON" or "OFF")
     WhitelistToggle.TextColor3 = WhitelistFriends and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 255, 255)
     UpdateWhitelist()
+end)
+
+WeakerToggle.MouseButton1Click:Connect(function()
+    KillOnlyWeaker = not KillOnlyWeaker
+    WeakerToggle.Text = "Kill Weaker Only: " .. (KillOnlyWeaker and "ON" or "OFF")
+    WeakerToggle.TextColor3 = KillOnlyWeaker and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 255, 255)
 end)
 
 StartButton.MouseButton1Click:Connect(function()
