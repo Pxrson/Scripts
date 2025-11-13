@@ -12,16 +12,17 @@ getgenv().AutoKillLoaded = true
 
 local Character, Humanoid, Hand, Punch, Animator
 local LastAttack, LastRespawn, LastCheck = 0, 0, 0
-local Running = false
+local Running = true
 local StartTime = os.time()
-local WhitelistFriends = false
-local KillOnlyWeaker = false
+local WhitelistFriends = true
+local KillOnlyWeaker = true
 
 if getgenv().AutoStartEnabled then
     Running = true
 end
 
 getgenv().WhitelistedPlayers = getgenv().WhitelistedPlayers or {}
+getgenv().TempWhitelistStronger = getgenv().TempWhitelistStronger or {}
 
 local BlockedAnimations = {
     ["rbxassetid://3638729053"] = true,
@@ -66,36 +67,11 @@ local function GetLocalPlayerDamage()
     return GetPlayerStatValue(LocalPlayer, {"Damage","DMG","Attack","Strength","Str"}) or 1
 end
 
-local function CalculatePlayerHealth(Player)
-    local Total = 0
-    if Player then
-        local Durability = Player:FindFirstChild("Durability")
-        if Durability then Total = Durability.Value end
-
-        local EquippedPets = Player:FindFirstChild("equippedPets")
-        local PetsHealth = 0
-        if EquippedPets then
-            for _, Pet in pairs(EquippedPets:GetChildren()) do
-                if Pet and Pet.Value and Pet.Value.Parent and Player.Character and Pet.Value.Parent == Player.Character then
-                    if Pet.Value.Name == "Small Fry" then
-                        PetsHealth = PetsHealth + 25
-                    elseif Pet.Value.Name == "Mighty Monster" then
-                        PetsHealth = PetsHealth + 50
-                    end
-                end
-            end
-        end
-
-        local UltFolder = Player:FindFirstChild("ultimatesFolder")
-        local UltimateHealth = 0
-        if UltFolder then
-            local Infernal = UltFolder:FindFirstChild("Infernal Health")
-            if Infernal then UltimateHealth = Infernal.Value end
-        end
-
-        Total = Total * ((PetsHealth + UltimateHealth * 10) / 100 + 1)
+local function GetTargetHealth(Player)
+    if Player.Character and Player.Character:FindFirstChild("Humanoid") then
+        return Player.Character.Humanoid.MaxHealth
     end
-    return Total
+    return 100
 end
 
 local function UpdateWhitelist()
@@ -139,13 +115,36 @@ local function IsWhitelisted(player)
     return false
 end
 
+local function IsTempWhitelisted(player)
+    for _, name in ipairs(getgenv().TempWhitelistStronger) do
+        if name:lower() == player.Name:lower() then
+            return true
+        end
+    end
+    return false
+end
+
 local function ShouldKillPlayer(player)
     if not KillOnlyWeaker then return true end
+    if IsTempWhitelisted(player) then return false end
     local MyDamage = GetLocalPlayerDamage()
-    local Health = CalculatePlayerHealth(player)
+    local Health = GetTargetHealth(player)
     if Health and MyDamage and MyDamage > 0 then
         local HitsNeeded = math.ceil(Health / MyDamage)
-        return HitsNeeded <= 5
+        if HitsNeeded > 5 then
+            local AlreadyWhitelisted = false
+            for _, Name in ipairs(getgenv().TempWhitelistStronger) do
+                if Name:lower() == player.Name:lower() then
+                    AlreadyWhitelisted = true
+                    break
+                end
+            end
+            if not AlreadyWhitelisted then
+                table.insert(getgenv().TempWhitelistStronger, player.Name)
+            end
+            return false
+        end
+        return true
     end
     return true
 end
@@ -180,9 +179,18 @@ LocalPlayer.CharacterAdded:Connect(function()
 end)
 Players.PlayerAdded:Connect(function()
     UpdateWhitelist()
+    getgenv().TempWhitelistStronger = {}
+end)
+Players.PlayerRemoving:Connect(function(player)
+    for i = #getgenv().TempWhitelistStronger, 1, -1 do
+        if getgenv().TempWhitelistStronger[i]:lower() == player.Name:lower() then
+            table.remove(getgenv().TempWhitelistStronger, i)
+        end
+    end
 end)
 UpdateAll()
 UpdateAntiKnockback()
+UpdateWhitelist()
 
 if not getgenv().AnimBlockConnection then
     getgenv().AnimBlockConnection = RunService.RenderStepped:Connect(function()
@@ -342,18 +350,18 @@ WhitelistToggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 WhitelistToggle.Position = UDim2.new(0, 8, 0, 88)
 WhitelistToggle.Size = UDim2.new(1, -16, 0, 18)
 WhitelistToggle.Font = Enum.Font.Code
-WhitelistToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+WhitelistToggle.TextColor3 = Color3.fromRGB(0, 255, 0)
 WhitelistToggle.TextSize = 13
-WhitelistToggle.Text = "Whitelist Friends: OFF"
+WhitelistToggle.Text = "Whitelist Friends: ON"
 
 WeakerToggle.Parent = Main
 WeakerToggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 WeakerToggle.Position = UDim2.new(0, 8, 0, 108)
 WeakerToggle.Size = UDim2.new(1, -16, 0, 18)
 WeakerToggle.Font = Enum.Font.Code
-WeakerToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+WeakerToggle.TextColor3 = Color3.fromRGB(0, 255, 0)
 WeakerToggle.TextSize = 13
-WeakerToggle.Text = "Kill Weaker Only: OFF"
+WeakerToggle.Text = "Kill Weaker Only: ON"
 
 StartButton.Parent = Main
 StartButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -413,6 +421,9 @@ WeakerToggle.MouseButton1Click:Connect(function()
     KillOnlyWeaker = not KillOnlyWeaker
     WeakerToggle.Text = "Kill Weaker Only: " .. (KillOnlyWeaker and "ON" or "OFF")
     WeakerToggle.TextColor3 = KillOnlyWeaker and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 255, 255)
+    if not KillOnlyWeaker then
+        getgenv().TempWhitelistStronger = {}
+    end
 end)
 
 StartButton.MouseButton1Click:Connect(function()
