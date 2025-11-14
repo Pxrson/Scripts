@@ -247,9 +247,13 @@ RunService.RenderStepped:Connect(function()
                 if Character2 and Character2.Parent then
                     local Humanoid2 = Character2:FindFirstChildOfClass("Humanoid")
                     local Head = Character2:FindFirstChild("Head")
-                    if Humanoid2 and Head and Humanoid2.Health > 0 then
+                    local RootPart = Character2:FindFirstChild("HumanoidRootPart")
+                    if Humanoid2 and Head and RootPart and Humanoid2.Health > 0 then
+                        local WasAnchored = RootPart.Anchored
+                        RootPart.Anchored = true
                         firetouchinterest(Head, Hand, 0)
                         firetouchinterest(Head, Hand, 1)
+                        RootPart.Anchored = WasAnchored
                     end
                 end
             end
