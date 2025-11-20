@@ -15,30 +15,30 @@ local Window = Library:CreateWindow{
 }
 
 local Tabs = {
-    Teleport = Window:CreateTab{ Title = "Teleport", Icon = "phosphor-rocket-launch-bold" },
-    Settings = Window:CreateTab{ Title = "Settings", Icon = "settings" }
+    Teleport = Window:CreateTab{Title = "Teleport", Icon = "phosphor-rocket-launch-bold"},
+    Settings = Window:CreateTab{Title = "Settings", Icon = "settings"}
 }
 
 local Options = Library.Options
+local StageNumbers = {}
 
-local stageNumbers = {}
 for i = 1, 727 do
-    table.insert(stageNumbers, tostring(i))
+    table.insert(StageNumbers, tostring(i))
 end
 
 Tabs.Teleport:CreateDropdown("StageDropdown", {
     Title = "Teleport to Stage",
-    Values = stageNumbers,
+    Values = StageNumbers,
     Multi = false,
     Default = 1,
     Callback = function(Value)
-        local stageNum = tonumber(Value)
-        if stageNum then
-            local char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
-            local spawn = game.Workspace.Stages:FindFirstChild(tostring(stageNum))
-            if spawn and spawn:FindFirstChild("Spawn") then
-                local offset = Vector3.new(0, 5, 0)
-                char:PivotTo(spawn.Spawn.CFrame + offset)
+        local StageNum = tonumber(Value)
+        if StageNum then
+            local Character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+            local Stage = game.Workspace.Stages:FindFirstChild(tostring(StageNum))
+            if Stage and Stage:FindFirstChild("Spawn") then
+                local Offset = Vector3.new(0, 5, 0)
+                Character:PivotTo(Stage.Spawn.CFrame + Offset)
             end
         end
     end
@@ -48,11 +48,11 @@ Tabs.Teleport:CreateButton{
     Title = "Teleport to End",
     Description = "Teleport to stage 727",
     Callback = function()
-        local char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
-        local spawn = game.Workspace.Stages:FindFirstChild("727")
-        if spawn and spawn:FindFirstChild("Spawn") then
-            local offset = Vector3.new(0, 5, 0)
-            char:PivotTo(spawn.Spawn.CFrame + offset)
+        local Character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+        local Stage = game.Workspace.Stages:FindFirstChild("727")
+        if Stage and Stage:FindFirstChild("Spawn") then
+            local Offset = Vector3.new(0, 5, 0)
+            Character:PivotTo(Stage.Spawn.CFrame + Offset)
         end
     end
 }
@@ -62,18 +62,20 @@ Tabs.Teleport:CreateToggle("AutoSkip", {
     Default = false,
     Callback = function(Value)
         if Value then
-            local player = game.Players.LocalPlayer
-            local char = player.Character or player.CharacterAdded:Wait()
-            local humanoidRootPart = char:FindFirstChild("HumanoidRootPart")
-            if humanoidRootPart then
+            local Player = game.Players.LocalPlayer
+            local Character = Player.Character or Player.CharacterAdded:Wait()
+            local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
+            
+            if HumanoidRootPart then
                 for i = 1, 727 do
-                    local stage = game.Workspace.Stages:FindFirstChild(tostring(i))
-                    if stage and stage:FindFirstChild("Spawn") then
-                        firetouchinterest(humanoidRootPart, stage.Spawn, 0)
-                        firetouchinterest(humanoidRootPart, stage.Spawn, 1)
+                    local Stage = game.Workspace.Stages:FindFirstChild(tostring(i))
+                    if Stage and Stage:FindFirstChild("Spawn") then
+                        firetouchinterest(HumanoidRootPart, Stage.Spawn, 0)
+                        firetouchinterest(HumanoidRootPart, Stage.Spawn, 1)
                     end
                 end
             end
+            
             Options.AutoSkip:SetValue(false)
         end
     end
