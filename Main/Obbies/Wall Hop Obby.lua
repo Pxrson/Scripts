@@ -20,15 +20,15 @@ local Window = Library:CreateWindow{
 }
 
 local Tabs = {
-    Main = Window:CreateTab{ Title = "Main", Icon = "house" },
-    Teleport = Window:CreateTab{ Title = "Teleport", Icon = "map" },
-    Settings = Window:CreateTab{ Title = "Settings", Icon = "settings" }
+    Main = Window:CreateTab{Title = "Main", Icon = "house"},
+    Teleport = Window:CreateTab{Title = "Teleport", Icon = "map"},
+    Settings = Window:CreateTab{Title = "Settings", Icon = "settings"}
 }
 
 local Options = Library.Options
 local LocalPlayer = game:GetService("Players").LocalPlayer
 
-local stages = {
+local Stages = {
     {Name = "0", Path = "Workspace.Stages.0", Position = Vector3.new(21, -279.5, -31)},
     {Name = "1", Path = "Workspace.Stages.1", Position = Vector3.new(37, -279.5, -31)},
     {Name = "2", Path = "Workspace.Stages.2", Position = Vector3.new(66, -264.5, -31.5)},
@@ -87,11 +87,11 @@ local stages = {
     {Name = "55", Path = "Workspace.Stages.55", Position = Vector3.new(2406.5, 276.5, 2.4999547004699707)}
 }
 
-local playerName = game.Players.LocalPlayer.Name
+local PlayerName = game.Players.LocalPlayer.Name
 
 Tabs.Main:CreateParagraph("Welcome", {
     Title = "Greetings!",
-    Content = "Welcome, " .. playerName .. ", to my script!! This script allows you to teleport through all stages of the game easily. Use the Teleport tab to access teleportation options. Enjoy the script please!"
+    Content = "Welcome, " .. PlayerName .. ", to my script!! This script allows you to teleport through all stages of the game easily. Use the Teleport tab to access teleportation options. Enjoy the script please!"
 })
 
 Tabs.Main:CreateSection("Random")
@@ -107,7 +107,6 @@ Tabs.Main:CreateToggle("Auto Wall Hop", {
             Content = "Auto wall hop enabled.",
             Duration = 5
         }
-        -- code
     else
         Library:Notify{
             Title = "Auto Wall Hop",
@@ -123,9 +122,9 @@ Tabs.Main:CreateButton{
     Title = "Reset Character",
     Description = "Resets your character.",
     Callback = function()
-        local character = LocalPlayer.Character
-        if character then
-            character:BreakJoints()
+        local Character = LocalPlayer.Character
+        if Character then
+            Character:BreakJoints()
             Library:Notify{
                 Title = "Reset Character",
                 Content = "Character has been reset.",
@@ -165,17 +164,19 @@ Tabs.Main:CreateButton{
         local TeleportService = game:GetService("TeleportService")
         local PlaceId = game.PlaceId
 
-        local function serverHop()
-            local servers = {}
-            local req = game:HttpGet("https://games.roblox.com/v1/games/"..PlaceId.."/servers/Public?sortOrder=2&limit=100")
-            local data = HttpService:JSONDecode(req)
-            for _, v in pairs(data.data) do
-                if v.playing < v.maxPlayers and v.id ~= game.JobId then
-                    table.insert(servers, v.id)
+        local function ServerHop()
+            local Servers = {}
+            local Request = game:HttpGet("https://games.roblox.com/v1/games/" .. PlaceId .. "/servers/Public?sortOrder=2&limit=100")
+            local Data = HttpService:JSONDecode(Request)
+            
+            for _, Server in pairs(Data.data) do
+                if Server.playing < Server.maxPlayers and Server.id ~= game.JobId then
+                    table.insert(Servers, Server.id)
                 end
             end
-            if #servers > 0 then
-                TeleportService:TeleportToPlaceInstance(PlaceId, servers[math.random(1, #servers)], LocalPlayer)
+            
+            if #Servers > 0 then
+                TeleportService:TeleportToPlaceInstance(PlaceId, Servers[math.random(1, #Servers)], LocalPlayer)
             else
                 Library:Notify{
                     Title = "Server Hop",
@@ -185,16 +186,16 @@ Tabs.Main:CreateButton{
             end
         end
 
-        serverHop()
+        ServerHop()
     end
 }
 
-local teleportToStage = function(position)
+local function TeleportToStage(Position)
     if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(position)
+        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Position)
         Library:Notify{
             Title = "Teleport",
-            Content = "Teleported to stage position: " .. tostring(position),
+            Content = "Teleported to stage position: " .. tostring(Position),
             Duration = 2
         }
     else
@@ -221,9 +222,9 @@ Tabs.Teleport:CreateToggle("AutoTeleport", {
         }
         task.spawn(function()
             while Options.AutoTeleport.Value and not Library.Unloaded do
-                for _, stage in ipairs(stages) do
+                for _, Stage in ipairs(Stages) do
                     if not Options.AutoTeleport.Value then break end
-                    teleportToStage(stage.Position)
+                    TeleportToStage(Stage.Position)
                     task.wait(0.5)
                 end
             end
@@ -239,12 +240,12 @@ end)
 
 Tabs.Teleport:CreateSection("Manual Teleport")
 
-for _, stage in ipairs(stages) do
+for _, Stage in ipairs(Stages) do
     Tabs.Teleport:CreateButton{
-        Title = "Teleport to Stage " .. stage.Name,
-        Description = "Teleport to " .. stage.Path,
+        Title = "Teleport to Stage " .. Stage.Name,
+        Description = "Teleport to " .. Stage.Path,
         Callback = function()
-            teleportToStage(stage.Position)
+            TeleportToStage(Stage.Position)
         end
     }
 end
