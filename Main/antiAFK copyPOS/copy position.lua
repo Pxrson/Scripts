@@ -1,222 +1,220 @@
--- dont steal this shit brutha so i added "pxrson_" to every local lol
--- discord: .pxrson
-local pxrson_s = {
-    p = game:GetService('Players'),
-    v = game:GetService('VirtualUser'),
-    sg = game:GetService("StarterGui"),
-    rs = game:GetService("RunService"),
-    ts = game:GetService("TweenService")
+local Services = {
+    Players = game:GetService('Players'),
+    VirtualUser = game:GetService('VirtualUser'),
+    StarterGui = game:GetService("StarterGui"),
+    RunService = game:GetService("RunService"),
+    TweenService = game:GetService("TweenService")
 }
 
-local pxrson_is_mobile = game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").KeyboardEnabled
+local IsMobile = game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").KeyboardEnabled
 
-local pxrson_size_multiplier = pxrson_is_mobile and 0.8 or 1
-local pxrson_main_width = math.floor(260 * pxrson_size_multiplier)
-local pxrson_main_height = math.floor(120 * pxrson_size_multiplier)
+local SizeMultiplier = IsMobile and 0.8 or 1
+local MainWidth = math.floor(260 * SizeMultiplier)
+local MainHeight = math.floor(120 * SizeMultiplier)
 
-local pxrson_g = Instance.new("ScreenGui")
-local pxrson_m = Instance.new("Frame")
-local pxrson_uc = Instance.new("UICorner")
-local pxrson_tb = Instance.new("Frame")
-local pxrson_tc = Instance.new("UICorner")
-local pxrson_fl = Instance.new("TextLabel")
-local pxrson_tl = Instance.new("TextLabel")
-local pxrson_el = Instance.new("TextLabel")
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local MainCorner = Instance.new("UICorner")
+local TitleBar = Instance.new("Frame")
+local TitleCorner = Instance.new("UICorner")
+local FpsLabel = Instance.new("TextLabel")
+local TimeLabel = Instance.new("TextLabel")
+local CoordsLabel = Instance.new("TextLabel")
 
-pxrson_g.Parent = game:GetService("CoreGui")
-pxrson_g.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-pxrson_g.ResetOnSpawn = false
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.ResetOnSpawn = false
 
-pxrson_m.Parent = pxrson_g
-pxrson_m.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-pxrson_m.BackgroundTransparency = 0.1
-pxrson_m.Position = UDim2.new(0.6, 0, 0.1, 0)
-pxrson_m.Size = UDim2.new(0, pxrson_main_width, 0, pxrson_main_height)
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainFrame.BackgroundTransparency = 0.1
+MainFrame.Position = UDim2.new(0.6, 0, 0.1, 0)
+MainFrame.Size = UDim2.new(0, MainWidth, 0, MainHeight)
 
-pxrson_tb.Parent = pxrson_m
-pxrson_tb.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-pxrson_tb.BackgroundTransparency = 0.1
-pxrson_tb.Size = UDim2.new(1, 0, 0, math.floor(22 * pxrson_size_multiplier))
+TitleBar.Parent = MainFrame
+TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+TitleBar.BackgroundTransparency = 0.1
+TitleBar.Size = UDim2.new(1, 0, 0, math.floor(22 * SizeMultiplier))
 
-pxrson_tc.Parent = pxrson_tb
-pxrson_tc.CornerRadius = UDim.new(0, 4)
+TitleCorner.Parent = TitleBar
+TitleCorner.CornerRadius = UDim.new(0, 4)
 
-pxrson_uc.Parent = pxrson_m
-pxrson_uc.CornerRadius = UDim.new(0, 4)
+MainCorner.Parent = MainFrame
+MainCorner.CornerRadius = UDim.new(0, 4)
 
-local function pxrson_l(pxrson_p)
-    local pxrson_x = Instance.new("TextLabel")
-    pxrson_x.Parent = pxrson_m
-    pxrson_x.BackgroundTransparency = 1
-    pxrson_x.Position = pxrson_p
-    pxrson_x.Size = UDim2.new(1, -10, 0, math.floor(18 * pxrson_size_multiplier))
-    pxrson_x.Font = Enum.Font.Code
-    pxrson_x.TextColor3 = Color3.fromRGB(255, 255, 255)
-    pxrson_x.TextSize = math.floor(13 * pxrson_size_multiplier)
-    pxrson_x.TextXAlignment = Enum.TextXAlignment.Left
-    return pxrson_x
+local function CreateLabel(Position)
+    local Label = Instance.new("TextLabel")
+    Label.Parent = MainFrame
+    Label.BackgroundTransparency = 1
+    Label.Position = Position
+    Label.Size = UDim2.new(1, -10, 0, math.floor(18 * SizeMultiplier))
+    Label.Font = Enum.Font.Code
+    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Label.TextSize = math.floor(13 * SizeMultiplier)
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+    return Label
 end
 
-pxrson_fl = pxrson_l(UDim2.new(0, 8, 0, math.floor(24 * pxrson_size_multiplier)))
-pxrson_tl = pxrson_l(UDim2.new(0, 8, 0, math.floor(42 * pxrson_size_multiplier)))
-pxrson_el = pxrson_l(UDim2.new(0, 8, 0, math.floor(60 * pxrson_size_multiplier)))
+FpsLabel = CreateLabel(UDim2.new(0, 8, 0, math.floor(24 * SizeMultiplier)))
+TimeLabel = CreateLabel(UDim2.new(0, 8, 0, math.floor(42 * SizeMultiplier)))
+CoordsLabel = CreateLabel(UDim2.new(0, 8, 0, math.floor(60 * SizeMultiplier)))
 
-local pxrson_u = game:GetService("UserInputService")
-local pxrson_d = false
-local pxrson_ds
-local pxrson_sp
-local pxrson_conn
+local UserInput = game:GetService("UserInputService")
+local IsDragging = false
+local DragStart
+local StartPos
+local DragConnection
 
-local function pxrson_upd(pxrson_current_pos)
-    local pxrson_delta = pxrson_current_pos - pxrson_ds
-    local pxrson_viewport = workspace.CurrentCamera.ViewportSize
-    local pxrson_new_x = math.max(0, math.min(pxrson_viewport.X - pxrson_m.AbsoluteSize.X, pxrson_sp.X + pxrson_delta.X))
-    local pxrson_new_y = math.max(0, math.min(pxrson_viewport.Y - pxrson_m.AbsoluteSize.Y, pxrson_sp.Y + pxrson_delta.Y))
+local function UpdateDrag(CurrentPos)
+    local Delta = CurrentPos - DragStart
+    local Viewport = workspace.CurrentCamera.ViewportSize
+    local NewX = math.max(0, math.min(Viewport.X - MainFrame.AbsoluteSize.X, StartPos.X + Delta.X))
+    local NewY = math.max(0, math.min(Viewport.Y - MainFrame.AbsoluteSize.Y, StartPos.Y + Delta.Y))
     
-    pxrson_m.Position = UDim2.new(0, pxrson_new_x, 0, pxrson_new_y)
+    MainFrame.Position = UDim2.new(0, NewX, 0, NewY)
 end
 
-pxrson_tb.InputBegan:Connect(function(pxrson_i)
-    if pxrson_i.UserInputType == Enum.UserInputType.MouseButton1 or pxrson_i.UserInputType == Enum.UserInputType.Touch then
-        pxrson_d = true
-        pxrson_ds = pxrson_i.Position
-        pxrson_sp = Vector2.new(pxrson_m.AbsolutePosition.X, pxrson_m.AbsolutePosition.Y)
+TitleBar.InputBegan:Connect(function(Input)
+    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+        IsDragging = true
+        DragStart = Input.Position
+        StartPos = Vector2.new(MainFrame.AbsolutePosition.X, MainFrame.AbsolutePosition.Y)
         
-        pxrson_conn = pxrson_u.InputChanged:Connect(function(pxrson_input)
-            if pxrson_d and (pxrson_input.UserInputType == Enum.UserInputType.MouseMovement or pxrson_input.UserInputType == Enum.UserInputType.Touch) then
-                pxrson_upd(pxrson_input.Position)
+        DragConnection = UserInput.InputChanged:Connect(function(InputChanged)
+            if IsDragging and (InputChanged.UserInputType == Enum.UserInputType.MouseMovement or InputChanged.UserInputType == Enum.UserInputType.Touch) then
+                UpdateDrag(InputChanged.Position)
             end
         end)
         
-        local pxrson_end_conn
-        pxrson_end_conn = pxrson_u.InputEnded:Connect(function(pxrson_input)
-            if pxrson_input.UserInputType == Enum.UserInputType.MouseButton1 or pxrson_input.UserInputType == Enum.UserInputType.Touch then
-                pxrson_d = false
-                if pxrson_conn then
-                    pxrson_conn:Disconnect()
-                    pxrson_conn = nil
+        local EndConnection
+        EndConnection = UserInput.InputEnded:Connect(function(InputEnded)
+            if InputEnded.UserInputType == Enum.UserInputType.MouseButton1 or InputEnded.UserInputType == Enum.UserInputType.Touch then
+                IsDragging = false
+                if DragConnection then
+                    DragConnection:Disconnect()
+                    DragConnection = nil
                 end
-                pxrson_end_conn:Disconnect()
+                EndConnection:Disconnect()
             end
         end)
     end
 end)
 
-local pxrson_st = nil
+local SavedCoords = nil
 
-local pxrson_t = Instance.new("TextLabel")
-pxrson_t.Parent = pxrson_tb
-pxrson_t.BackgroundTransparency = 1
-pxrson_t.Position = UDim2.new(0, 8, 0, 0)
-pxrson_t.Size = UDim2.new(1, -16, 1, 0)
-pxrson_t.Font = Enum.Font.Code
-pxrson_t.Text = "Coordinates Copy"
-pxrson_t.TextColor3 = Color3.fromRGB(255, 255, 255)
-pxrson_t.TextSize = math.floor(13 * pxrson_size_multiplier)
-pxrson_t.TextXAlignment = Enum.TextXAlignment.Left
+local TitleText = Instance.new("TextLabel")
+TitleText.Parent = TitleBar
+TitleText.BackgroundTransparency = 1
+TitleText.Position = UDim2.new(0, 8, 0, 0)
+TitleText.Size = UDim2.new(1, -16, 1, 0)
+TitleText.Font = Enum.Font.Code
+TitleText.Text = "Coordinates Copy"
+TitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleText.TextSize = math.floor(13 * SizeMultiplier)
+TitleText.TextXAlignment = Enum.TextXAlignment.Left
 
-local pxrson_cb = Instance.new("TextButton")
-pxrson_cb.Parent = pxrson_tb
-pxrson_cb.BackgroundTransparency = 1
-pxrson_cb.Position = UDim2.new(1, -20, 0, 0)
-pxrson_cb.Size = UDim2.new(0, 20, 1, 0)
-pxrson_cb.Font = Enum.Font.Code
-pxrson_cb.Text = "×"
-pxrson_cb.TextColor3 = Color3.fromRGB(255, 255, 255)
-pxrson_cb.TextSize = math.floor(14 * pxrson_size_multiplier)
-pxrson_cb.AutoButtonColor = false
+local CloseButton = Instance.new("TextButton")
+CloseButton.Parent = TitleBar
+CloseButton.BackgroundTransparency = 1
+CloseButton.Position = UDim2.new(1, -20, 0, 0)
+CloseButton.Size = UDim2.new(0, 20, 1, 0)
+CloseButton.Font = Enum.Font.Code
+CloseButton.Text = "×"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.TextSize = math.floor(14 * SizeMultiplier)
+CloseButton.AutoButtonColor = false
 
-pxrson_cb.MouseEnter:Connect(function()
-    pxrson_cb.TextColor3 = Color3.fromRGB(255, 50, 50)
+CloseButton.MouseEnter:Connect(function()
+    CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
 end)
 
-pxrson_cb.MouseLeave:Connect(function()
-    pxrson_cb.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.MouseLeave:Connect(function()
+    CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 end)
 
-pxrson_cb.InputBegan:Connect(function(pxrson_i)
-    if pxrson_i.UserInputType == Enum.UserInputType.Touch then
-        pxrson_cb.TextColor3 = Color3.fromRGB(255, 50, 50)
+CloseButton.InputBegan:Connect(function(Input)
+    if Input.UserInputType == Enum.UserInputType.Touch then
+        CloseButton.TextColor3 = Color3.fromRGB(255, 50, 50)
     end
 end)
 
-pxrson_cb.InputEnded:Connect(function(pxrson_i)
-    if pxrson_i.UserInputType == Enum.UserInputType.Touch then
-        pxrson_cb.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.InputEnded:Connect(function(Input)
+    if Input.UserInputType == Enum.UserInputType.Touch then
+        CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     end
 end)
 
-pxrson_cb.MouseButton1Click:Connect(function()
-    pxrson_g:Destroy()
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
 end)
 
-pxrson_cb.TouchTap:Connect(function()
-    pxrson_g:Destroy()
+CloseButton.TouchTap:Connect(function()
+    ScreenGui:Destroy()
 end)
 
-local pxrson_bp = Instance.new("TextButton")
-pxrson_bp.Parent = pxrson_m
-pxrson_bp.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-pxrson_bp.BackgroundTransparency = 0.1
-pxrson_bp.Position = UDim2.new(0, 8, 0, math.floor(80 * pxrson_size_multiplier))
-pxrson_bp.Size = UDim2.new(0, math.floor(70 * pxrson_size_multiplier), 0, math.floor(20 * pxrson_size_multiplier))
-pxrson_bp.Font = Enum.Font.Code
-pxrson_bp.Text = "copy"
-pxrson_bp.TextColor3 = Color3.fromRGB(255, 255, 255)
-pxrson_bp.TextSize = math.floor(12 * pxrson_size_multiplier)
-pxrson_bp.AutoButtonColor = false
+local CopyButton = Instance.new("TextButton")
+CopyButton.Parent = MainFrame
+CopyButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+CopyButton.BackgroundTransparency = 0.1
+CopyButton.Position = UDim2.new(0, 8, 0, math.floor(80 * SizeMultiplier))
+CopyButton.Size = UDim2.new(0, math.floor(70 * SizeMultiplier), 0, math.floor(20 * SizeMultiplier))
+CopyButton.Font = Enum.Font.Code
+CopyButton.Text = "copy"
+CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyButton.TextSize = math.floor(12 * SizeMultiplier)
+CopyButton.AutoButtonColor = false
 
-local pxrson_bpc = Instance.new("UICorner")
-pxrson_bpc.Parent = pxrson_bp
-pxrson_bpc.CornerRadius = UDim.new(0, 3)
+local CopyButtonCorner = Instance.new("UICorner")
+CopyButtonCorner.Parent = CopyButton
+CopyButtonCorner.CornerRadius = UDim.new(0, 3)
 
-local pxrson_bt = Instance.new("TextButton")
-pxrson_bt.Parent = pxrson_m
-pxrson_bt.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-pxrson_bt.BackgroundTransparency = 0.1
-pxrson_bt.Position = UDim2.new(0, math.floor(82 * pxrson_size_multiplier), 0, math.floor(80 * pxrson_size_multiplier))
-pxrson_bt.Size = UDim2.new(0, math.floor(70 * pxrson_size_multiplier), 0, math.floor(20 * pxrson_size_multiplier))
-pxrson_bt.Font = Enum.Font.Code
-pxrson_bt.Text = "paste"
-pxrson_bt.TextColor3 = Color3.fromRGB(255, 255, 255)
-pxrson_bt.TextSize = math.floor(12 * pxrson_size_multiplier)
-pxrson_bt.AutoButtonColor = false
+local PasteButton = Instance.new("TextButton")
+PasteButton.Parent = MainFrame
+PasteButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+PasteButton.BackgroundTransparency = 0.1
+PasteButton.Position = UDim2.new(0, math.floor(82 * SizeMultiplier), 0, math.floor(80 * SizeMultiplier))
+PasteButton.Size = UDim2.new(0, math.floor(70 * SizeMultiplier), 0, math.floor(20 * SizeMultiplier))
+PasteButton.Font = Enum.Font.Code
+PasteButton.Text = "paste"
+PasteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+PasteButton.TextSize = math.floor(12 * SizeMultiplier)
+PasteButton.AutoButtonColor = false
 
-local pxrson_btc = Instance.new("UICorner")
-pxrson_btc.Parent = pxrson_bt
-pxrson_btc.CornerRadius = UDim.new(0, 3)
+local PasteButtonCorner = Instance.new("UICorner")
+PasteButtonCorner.Parent = PasteButton
+PasteButtonCorner.CornerRadius = UDim.new(0, 3)
 
-pxrson_bp.MouseEnter:Connect(function()
-    pxrson_bp.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+CopyButton.MouseEnter:Connect(function()
+    CopyButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 end)
 
-pxrson_bp.MouseLeave:Connect(function()
-    pxrson_bp.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+CopyButton.MouseLeave:Connect(function()
+    CopyButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 end)
 
-pxrson_bt.MouseEnter:Connect(function()
-    pxrson_bt.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+PasteButton.MouseEnter:Connect(function()
+    PasteButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 end)
 
-pxrson_bt.MouseLeave:Connect(function()
-    pxrson_bt.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+PasteButton.MouseLeave:Connect(function()
+    PasteButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 end)
 
-pxrson_bp.MouseButton1Click:Connect(function()
-    if pxrson_s.p.LocalPlayer.Character and pxrson_s.p.LocalPlayer.Character.HumanoidRootPart then
-        local pxrson_coords = pxrson_s.p.LocalPlayer.Character.HumanoidRootPart.Position
-        pxrson_st = pxrson_coords
-        local pxrson_formatted_coords = string.format("%.1f, %.1f, %.1f", pxrson_coords.X, pxrson_coords.Y, pxrson_coords.Z)
+CopyButton.MouseButton1Click:Connect(function()
+    if Services.Players.LocalPlayer.Character and Services.Players.LocalPlayer.Character.HumanoidRootPart then
+        local Coords = Services.Players.LocalPlayer.Character.HumanoidRootPart.Position
+        SavedCoords = Coords
+        local FormattedCoords = string.format("%.1f, %.1f, %.1f", Coords.X, Coords.Y, Coords.Z)
         
-        setclipboard(pxrson_formatted_coords)
+        setclipboard(FormattedCoords)
         
-        pxrson_s.sg:SetCore("SendNotification", {
+        Services.StarterGui:SetCore("SendNotification", {
             Title = "Coordinates Copy",
-            Text = "coordinates saved: " .. pxrson_formatted_coords,
+            Text = "coordinates saved: " .. FormattedCoords,
             Duration = 3
         })
     else
-        pxrson_s.sg:SetCore("SendNotification", {
+        Services.StarterGui:SetCore("SendNotification", {
             Title = "Fuckass Error",
             Text = "no character found :(",
             Duration = 3
@@ -224,25 +222,25 @@ pxrson_bp.MouseButton1Click:Connect(function()
     end
 end)
 
-pxrson_bt.MouseButton1Click:Connect(function()
-    if pxrson_st then
-        if pxrson_s.p.LocalPlayer.Character and pxrson_s.p.LocalPlayer.Character.HumanoidRootPart then
-            pxrson_s.p.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(pxrson_st)
-            local pxrson_formatted_coords = string.format("%.1f, %.1f, %.1f", pxrson_st.X, pxrson_st.Y, pxrson_st.Z)
-            pxrson_s.sg:SetCore("SendNotification", {
+PasteButton.MouseButton1Click:Connect(function()
+    if SavedCoords then
+        if Services.Players.LocalPlayer.Character and Services.Players.LocalPlayer.Character.HumanoidRootPart then
+            Services.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(SavedCoords)
+            local FormattedCoords = string.format("%.1f, %.1f, %.1f", SavedCoords.X, SavedCoords.Y, SavedCoords.Z)
+            Services.StarterGui:SetCore("SendNotification", {
                 Title = "Coordinates Copy",
-                Text = "teleported to: " .. pxrson_formatted_coords,
+                Text = "teleported to: " .. FormattedCoords,
                 Duration = 3
             })
         else
-            pxrson_s.sg:SetCore("SendNotification", {
+            Services.StarterGui:SetCore("SendNotification", {
                 Title = "Fuckass Error",
                 Text = "no character found :(",
                 Duration = 3
             })
         end
     else
-        pxrson_s.sg:SetCore("SendNotification", {
+        Services.StarterGui:SetCore("SendNotification", {
             Title = "Coordinates Copy",
             Text = "no coordinates saved :(",
             Duration = 3
@@ -250,20 +248,20 @@ pxrson_bt.MouseButton1Click:Connect(function()
     end
 end)
 
-local function pxrson_upg()
-    pxrson_fl.Text = "fps: " .. math.floor(1/pxrson_s.rs.RenderStepped:Wait())
-    pxrson_tl.Text = "time: " .. os.date("%H:%M:%S")
-    if pxrson_s.p.LocalPlayer.Character and pxrson_s.p.LocalPlayer.Character.HumanoidRootPart then
-        local pxrson_coords = pxrson_s.p.LocalPlayer.Character.HumanoidRootPart.Position
-        pxrson_el.Text = string.format("coords: %.1f, %.1f, %.1f", pxrson_coords.X, pxrson_coords.Y, pxrson_coords.Z)
+local function UpdateDisplay()
+    FpsLabel.Text = "fps: " .. math.floor(1/Services.RunService.RenderStepped:Wait())
+    TimeLabel.Text = "time: " .. os.date("%H:%M:%S")
+    if Services.Players.LocalPlayer.Character and Services.Players.LocalPlayer.Character.HumanoidRootPart then
+        local Coords = Services.Players.LocalPlayer.Character.HumanoidRootPart.Position
+        CoordsLabel.Text = string.format("coords: %.1f, %.1f, %.1f", Coords.X, Coords.Y, Coords.Z)
     else
-        pxrson_el.Text = "coords: no character"
+        CoordsLabel.Text = "coords: no character"
     end
 end
 
-pxrson_s.rs.RenderStepped:Connect(pxrson_upg)
+Services.RunService.RenderStepped:Connect(UpdateDisplay)
 
-pxrson_s.sg:SetCore("SendNotification", {
+Services.StarterGui:SetCore("SendNotification", {
     Title = "Coordinates Copy",
     Text = "running.. [github.com/Pxrson] <3",
     Duration = 5
