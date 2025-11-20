@@ -1,208 +1,225 @@
-local svcs = {
-    pls = game:GetService("Players"),
-    sg = game:GetService("StarterGui")
+local Services = {
+    Players = game:GetService("Players"),
+    StarterGui = game:GetService("StarterGui")
 }
 
-local plr = svcs.pls.LocalPlayer
-local stage, running = 1, false
-local max = 30
+local Player = Services.Players.LocalPlayer
+local Stage, Running = 1, false
+local MaxStage = 30
 
-local gui = Instance.new("ScreenGui")
-local mframe = Instance.new("Frame")
-local mcorner = Instance.new("UICorner")
-local tbar = Instance.new("Frame")
-local tcorner = Instance.new("UICorner")
-local xbtn = Instance.new("TextButton")
-local tlabel = Instance.new("TextLabel")
-local slabel = Instance.new("TextLabel")
-local sbox = Instance.new("TextBox")
-local lbtn = Instance.new("TextButton")
-local rbtn = Instance.new("TextButton")
-local toggle_btn = Instance.new("TextButton")
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local MainCorner = Instance.new("UICorner")
+local TitleBar = Instance.new("Frame")
+local TitleCorner = Instance.new("UICorner")
+local CloseButton = Instance.new("TextButton")
+local TitleLabel = Instance.new("TextLabel")
+local StageLabel = Instance.new("TextLabel")
+local StageBox = Instance.new("TextBox")
+local LeftButton = Instance.new("TextButton")
+local RightButton = Instance.new("TextButton")
+local ToggleButton = Instance.new("TextButton")
 
-gui.Parent = game:GetService("CoreGui")
-gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-gui.ResetOnSpawn = false
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.ResetOnSpawn = false
 
-mframe.Parent = gui
-mframe.BackgroundColor3 = Color3.fromRGB(20,20,20)
-mframe.BackgroundTransparency = 0.1
-mframe.Size = UDim2.new(0,220,0,130)
-mframe.Position = UDim2.new(0.5,-110,0.5,-65)
-mcorner.Parent = mframe
-mcorner.CornerRadius = UDim.new(0,6)
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainFrame.BackgroundTransparency = 0.1
+MainFrame.Size = UDim2.new(0, 220, 0, 130)
+MainFrame.Position = UDim2.new(0.5, -110, 0.5, -65)
 
-tbar.Parent = mframe
-tbar.BackgroundColor3 = Color3.fromRGB(25,25,25)
-tbar.BackgroundTransparency = 0.1
-tbar.Size = UDim2.new(1,0,0,28)
-tcorner.Parent = tbar
-tcorner.CornerRadius = UDim.new(0,4)
+MainCorner.Parent = MainFrame
+MainCorner.CornerRadius = UDim.new(0, 6)
 
-tlabel.Parent = tbar
-tlabel.BackgroundTransparency = 1
-tlabel.Position = UDim2.new(0,8,0,0)
-tlabel.Size = UDim2.new(1,-16,1,0)
-tlabel.Font = Enum.Font.Code
-tlabel.Text = "No Limit Orb Farm | Pxrson"
-tlabel.TextColor3 = Color3.fromRGB(255,255,255)
-tlabel.TextSize = 13
-tlabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleBar.Parent = MainFrame
+TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+TitleBar.BackgroundTransparency = 0.1
+TitleBar.Size = UDim2.new(1, 0, 0, 28)
 
-xbtn.Parent = tbar
-xbtn.BackgroundTransparency = 1
-xbtn.Position = UDim2.new(1,-20,0,0)
-xbtn.Size = UDim2.new(0,20,1,0)
-xbtn.Font = Enum.Font.Code
-xbtn.Text = "×"
-xbtn.TextColor3 = Color3.fromRGB(255,0,0)
-xbtn.TextSize = 14
-xbtn.AutoButtonColor = false
-xbtn.MouseButton1Click:Connect(function() gui:Destroy() end)
-xbtn.TouchTap:Connect(function() gui:Destroy() end)
+TitleCorner.Parent = TitleBar
+TitleCorner.CornerRadius = UDim.new(0, 4)
 
-local function drag(f,b)
-    local uis = game:GetService("UserInputService")
-    local dragging, startPos, dragStart, conn
-    b.InputBegan:Connect(function(i)
-        if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = i.Position
-            startPos = Vector2.new(f.AbsolutePosition.X,f.AbsolutePosition.Y)
-            conn = uis.InputChanged:Connect(function(ch)
-                if dragging and (ch.UserInputType==Enum.UserInputType.MouseMovement or ch.UserInputType==Enum.UserInputType.Touch) then
-                    local delta = ch.Position-dragStart
-                    local vs = workspace.CurrentCamera.ViewportSize
-                    f.Position=UDim2.new(0,math.clamp(startPos.X+delta.X,0,vs.X-f.AbsoluteSize.X),0,math.clamp(startPos.Y+delta.Y,0,vs.Y-f.AbsoluteSize.Y))
+TitleLabel.Parent = TitleBar
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Position = UDim2.new(0, 8, 0, 0)
+TitleLabel.Size = UDim2.new(1, -16, 1, 0)
+TitleLabel.Font = Enum.Font.Code
+TitleLabel.Text = "No Limit Orb Farm | Pxrson"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.TextSize = 13
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+CloseButton.Parent = TitleBar
+CloseButton.BackgroundTransparency = 1
+CloseButton.Position = UDim2.new(1, -20, 0, 0)
+CloseButton.Size = UDim2.new(0, 20, 1, 0)
+CloseButton.Font = Enum.Font.Code
+CloseButton.Text = "×"
+CloseButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+CloseButton.TextSize = 14
+CloseButton.AutoButtonColor = false
+
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+CloseButton.TouchTap:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+local function MakeDraggable(Frame, Bar)
+    local UserInput = game:GetService("UserInputService")
+    local Dragging, StartPos, DragStart, DragConnection
+    
+    Bar.InputBegan:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+            Dragging = true
+            DragStart = Input.Position
+            StartPos = Vector2.new(Frame.AbsolutePosition.X, Frame.AbsolutePosition.Y)
+            
+            DragConnection = UserInput.InputChanged:Connect(function(Changed)
+                if Dragging and (Changed.UserInputType == Enum.UserInputType.MouseMovement or Changed.UserInputType == Enum.UserInputType.Touch) then
+                    local Delta = Changed.Position - DragStart
+                    local Viewport = workspace.CurrentCamera.ViewportSize
+                    Frame.Position = UDim2.new(0, math.clamp(StartPos.X + Delta.X, 0, Viewport.X - Frame.AbsoluteSize.X), 0, math.clamp(StartPos.Y + Delta.Y, 0, Viewport.Y - Frame.AbsoluteSize.Y))
                 end
             end)
-            local endConn
-            endConn=uis.InputEnded:Connect(function(e)
-                if e.UserInputType==Enum.UserInputType.MouseButton1 or e.UserInputType==Enum.UserInputType.Touch then
-                    dragging=false
-                    if conn then conn:Disconnect() conn=nil end
-                    endConn:Disconnect()
+            
+            local EndConnection
+            EndConnection = UserInput.InputEnded:Connect(function(Ended)
+                if Ended.UserInputType == Enum.UserInputType.MouseButton1 or Ended.UserInputType == Enum.UserInputType.Touch then
+                    Dragging = false
+                    if DragConnection then
+                        DragConnection:Disconnect()
+                        DragConnection = nil
+                    end
+                    EndConnection:Disconnect()
                 end
             end)
         end
     end)
 end
 
-drag(mframe,tbar)
+MakeDraggable(MainFrame, TitleBar)
 
-slabel.Parent=mframe
-slabel.Size=UDim2.new(0,70,0,18)
-slabel.Position=UDim2.new(0,10,0,40)
-slabel.BackgroundTransparency=1
-slabel.Font=Enum.Font.Code
-slabel.TextSize=13
-slabel.TextColor3=Color3.fromRGB(255,255,255)
-slabel.Text="Stage:"
+StageLabel.Parent = MainFrame
+StageLabel.Size = UDim2.new(0, 70, 0, 18)
+StageLabel.Position = UDim2.new(0, 10, 0, 40)
+StageLabel.BackgroundTransparency = 1
+StageLabel.Font = Enum.Font.Code
+StageLabel.TextSize = 13
+StageLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+StageLabel.Text = "Stage:"
 
-lbtn.Parent=mframe
-lbtn.Size=UDim2.new(0,25,0,22)
-lbtn.Position=UDim2.new(0,85,0,38)
-lbtn.Text="<"
-lbtn.Font=Enum.Font.Code
-lbtn.TextColor3=Color3.fromRGB(255,255,255)
-lbtn.TextSize=13
-lbtn.BackgroundColor3=Color3.fromRGB(25,25,25)
+LeftButton.Parent = MainFrame
+LeftButton.Size = UDim2.new(0, 25, 0, 22)
+LeftButton.Position = UDim2.new(0, 85, 0, 38)
+LeftButton.Text = "<"
+LeftButton.Font = Enum.Font.Code
+LeftButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+LeftButton.TextSize = 13
+LeftButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 
-sbox.Parent=mframe
-sbox.Size=UDim2.new(0,50,0,22)
-sbox.Position=UDim2.new(0,115,0,38)
-sbox.Text="1"
-sbox.ClearTextOnFocus=false
-sbox.BackgroundColor3=Color3.fromRGB(25,25,25)
-sbox.TextColor3=Color3.fromRGB(255,255,255)
-sbox.Font=Enum.Font.Code
-sbox.TextSize=13
+StageBox.Parent = MainFrame
+StageBox.Size = UDim2.new(0, 50, 0, 22)
+StageBox.Position = UDim2.new(0, 115, 0, 38)
+StageBox.Text = "1"
+StageBox.ClearTextOnFocus = false
+StageBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+StageBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+StageBox.Font = Enum.Font.Code
+StageBox.TextSize = 13
 
-rbtn.Parent=mframe
-rbtn.Size=UDim2.new(0,25,0,22)
-rbtn.Position=UDim2.new(0,175,0,38)
-rbtn.Text=">"
-rbtn.Font=Enum.Font.Code
-rbtn.TextColor3=Color3.fromRGB(255,255,255)
-rbtn.TextSize=13
-rbtn.BackgroundColor3=Color3.fromRGB(25,25,25)
+RightButton.Parent = MainFrame
+RightButton.Size = UDim2.new(0, 25, 0, 22)
+RightButton.Position = UDim2.new(0, 175, 0, 38)
+RightButton.Text = ">"
+RightButton.Font = Enum.Font.Code
+RightButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+RightButton.TextSize = 13
+RightButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 
-toggle_btn.Parent=mframe
-toggle_btn.Size=UDim2.new(0,200,0,25)
-toggle_btn.Position=UDim2.new(0,10,0,85)
-toggle_btn.Text="Start"
-toggle_btn.Font=Enum.Font.Code
-toggle_btn.TextSize=13
-toggle_btn.TextColor3=Color3.fromRGB(255,255,255)
-toggle_btn.BackgroundColor3=Color3.fromRGB(0,170,0)
+ToggleButton.Parent = MainFrame
+ToggleButton.Size = UDim2.new(0, 200, 0, 25)
+ToggleButton.Position = UDim2.new(0, 10, 0, 85)
+ToggleButton.Text = "Start"
+ToggleButton.Font = Enum.Font.Code
+ToggleButton.TextSize = 13
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
 
-sbox.FocusLost:Connect(function()
-    local v=tonumber(sbox.Text)
-    if v and v>=1 and v<=max then
-        stage=v
+StageBox.FocusLost:Connect(function()
+    local Value = tonumber(StageBox.Text)
+    if Value and Value >= 1 and Value <= MaxStage then
+        Stage = Value
     else
-        sbox.Text=tostring(stage)
+        StageBox.Text = tostring(Stage)
     end
 end)
 
-lbtn.MouseButton1Click:Connect(function()
-    if stage>1 then
-        stage=stage-1
-        sbox.Text=tostring(stage)
+LeftButton.MouseButton1Click:Connect(function()
+    if Stage > 1 then
+        Stage = Stage - 1
+        StageBox.Text = tostring(Stage)
     end
 end)
 
-rbtn.MouseButton1Click:Connect(function()
-    if stage<max then
-        stage=stage+1
-        sbox.Text=tostring(stage)
+RightButton.MouseButton1Click:Connect(function()
+    if Stage < MaxStage then
+        Stage = Stage + 1
+        StageBox.Text = tostring(Stage)
     end
 end)
 
-local function hrp()
-    local char=plr.Character or plr.CharacterAdded:Wait()
-    return char:WaitForChild("HumanoidRootPart")
+local function GetHumanoidRootPart()
+    local Character = Player.Character or Player.CharacterAdded:Wait()
+    return Character:WaitForChild("HumanoidRootPart")
 end
 
-local function tp(cf)
-    local root=hrp()
-    if root then root.CFrame=cf end
+local function Teleport(CFrame)
+    local Root = GetHumanoidRootPart()
+    if Root then
+        Root.CFrame = CFrame
+    end
 end
 
-local function collect()
-    local boosts=workspace:WaitForChild("Map"):WaitForChild("Stages"):WaitForChild("Boosts")
-    local stage_folder=boosts:FindFirstChild(tostring(stage))
-    if not stage_folder then return end
-    for _,model in ipairs(stage_folder:GetChildren()) do
-        for _,orb in ipairs(model:GetDescendants()) do
-            if not running then return end
-            if orb:IsA("BasePart") then
-                tp(orb.CFrame)
+local function CollectOrbs()
+    local Boosts = workspace:WaitForChild("Map"):WaitForChild("Stages"):WaitForChild("Boosts")
+    local StageFolder = Boosts:FindFirstChild(tostring(Stage))
+    if not StageFolder then return end
+    
+    for _, Model in ipairs(StageFolder:GetChildren()) do
+        for _, Orb in ipairs(Model:GetDescendants()) do
+            if not Running then return end
+            if Orb:IsA("BasePart") then
+                Teleport(Orb.CFrame)
                 task.wait(0.25)
             end
         end
     end
 end
 
-toggle_btn.MouseButton1Click:Connect(function()
-    running=not running
-    if running then
-        toggle_btn.Text="Stop"
-        toggle_btn.BackgroundColor3=Color3.fromRGB(170,0,0)
+ToggleButton.MouseButton1Click:Connect(function()
+    Running = not Running
+    if Running then
+        ToggleButton.Text = "Stop"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
         task.spawn(function()
-            while running do
-                collect()
+            while Running do
+                CollectOrbs()
                 task.wait(0.25)
             end
         end)
     else
-        toggle_btn.Text="Start"
-        toggle_btn.BackgroundColor3=Color3.fromRGB(0,170,0)
+        ToggleButton.Text = "Start"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
     end
 end)
 
-svcs.sg:SetCore("SendNotification",{
-    Title="Tip",
-    Text="teleport to your world, then input your stage",
-    Duration=5
+Services.StarterGui:SetCore("SendNotification", {
+    Title = "Tip",
+    Text = "teleport to your world, then input your stage",
+    Duration = 5
 })
